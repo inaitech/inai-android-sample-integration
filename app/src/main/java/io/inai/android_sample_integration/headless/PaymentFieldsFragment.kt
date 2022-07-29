@@ -3,7 +3,6 @@ package io.inai.android_sample_integration.headless
 import android.os.Bundle
 import io.inai.android_sample_integration.R
 import android.text.*
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -141,7 +140,6 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
                 countryCode = countryCode,
                 redirectUrl = ""
             )
-            Log.d("CONFIG","$config")
             try {
                 val inaiCheckout = InaiCheckout(config)
                 inaiCheckout.makePayment(

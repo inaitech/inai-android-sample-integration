@@ -1,6 +1,6 @@
 package io.inai.android_sample_integration
 
-import android.util.Log
+import android.widget.Toast
 import io.inai.android_sample_integration.Config.inaiPassword
 import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.model.OrderCustomer
@@ -40,7 +40,7 @@ object Orders {
                     callback()
                 }
                 is NetworkRequestHandler.Result.Failure -> {
-                    /* Handle Failure Case */
+
                 }
             }
         }
@@ -50,8 +50,6 @@ object Orders {
         val orderResult = json.decodeFromString<OrderResult>(orderResponse)
         customerId = orderResult.customer_id
         orderId = orderResult.id
-        Log.d("ORDER", "*******OrderId : $orderId*********")
-        Log.d("ORDER", "*******CustomerId : $customerId*********")
     }
 
     private fun getDataForOrders(): OrderPostData {

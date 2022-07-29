@@ -1,7 +1,6 @@
 package io.inai.android_sample_integration.headless
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import io.inai.android_sample_integration.Orders.prepareOrder
 import io.inai.android_sample_integration.model.*
 import kotlinx.android.synthetic.main.fragment_payment_options.*
 import kotlinx.serialization.decodeFromString
-import org.json.JSONObject
 import java.io.Serializable
 
 
@@ -71,13 +69,12 @@ class PaymentOptionsFragment : Fragment() {
         ) { result: NetworkRequestHandler.Result ->
             when (result) {
                 is NetworkRequestHandler.Result.Success -> onPaymentOptionsFetched(result.message)
-                is NetworkRequestHandler.Result.Failure -> Log.d("ERROR","*********${result.message}*********")
+                is NetworkRequestHandler.Result.Failure -> showAlert(result.message)
             }
         }
     }
 
     private fun onPaymentOptionsFetched(response: String) {
-        Log.d("JSON",JSONObject(response).toString(2))
         val paymentOptionsResult = json.decodeFromString<PaymentOptionsResult>(response)
         if (paymentOptionsResult.paymentMethodOptions.isNullOrEmpty()) {
             //  Show message payment options are not available
