@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import io.inai.android_sample_integration.Orders
 import io.inai.android_sample_integration.R
 import kotlinx.android.synthetic.main.fragment_checkout.*
 

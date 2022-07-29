@@ -54,7 +54,9 @@ object NetworkRequestHandler {
             //  and failure message will be sent back to the caller.
             if (responseCode == 201 || responseCode == 200) {
                 val successResponse = Result.Success(readResponse(conn))
-                resultCallback(successResponse)
+                coroutineScope.launch(Dispatchers.Main) {
+                    resultCallback(successResponse)
+                }
             } else {
                 throw Exception(conn.responseMessage)
             }
@@ -110,7 +112,9 @@ object NetworkRequestHandler {
             val responseCode: Int = conn.responseCode
             if (responseCode == 201 || responseCode == 200) {
                 val successResponse = Result.Success(readResponse(conn))
-                resultCallback(successResponse)
+                coroutineScope.launch(Dispatchers.Main) {
+                    resultCallback(successResponse)
+                }
             } else {
                 throw Exception(conn.responseMessage)
             }

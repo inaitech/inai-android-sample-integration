@@ -15,7 +15,8 @@ import kotlinx.serialization.json.JsonPrimitive
 object Orders {
 
     private const val inaiBackendOrdersUrl: String = BuildConfig.InaiBaseUrl + "orders"
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(inaiToken, inaiPassword)
+    val authenticationString
+        get() = NetworkRequestHandler.getEncodedAuthString(inaiToken, inaiPassword)
     var orderId: String = ""
         private set
     var customerId = ""
@@ -24,7 +25,7 @@ object Orders {
     /***
      *  Order Creation
      */
-    fun prepareOrder() {
+    fun prepareOrder(callback: () -> Unit) {
         val orderPostData = getDataForOrders()
         val jsonString = Json.encodeToString(orderPostData)
 
@@ -34,8 +35,12 @@ object Orders {
             authenticationString,
         ) { result: NetworkRequestHandler.Result ->
             when (result) {
-                is NetworkRequestHandler.Result.Success -> onOrderPrepared(result.message)
-                is NetworkRequestHandler.Result.Failure -> {/* Handle Failure Case */
+                is NetworkRequestHandler.Result.Success -> {
+                    onOrderPrepared(result.message)
+                    callback()
+                }
+                is NetworkRequestHandler.Result.Failure -> {
+                    /* Handle Failure Case */
                 }
             }
         }
@@ -45,8 +50,8 @@ object Orders {
         val orderResult = json.decodeFromString<OrderResult>(orderResponse)
         customerId = orderResult.customer_id
         orderId = orderResult.id
-        Log.d("ORDER","*******OrderId : $orderId*********")
-        Log.d("ORDER","*******CustomerId : $customerId*********")
+        Log.d("ORDER", "*******OrderId : $orderId*********")
+        Log.d("ORDER", "*******CustomerId : $customerId*********")
     }
 
     private fun getDataForOrders(): OrderPostData {

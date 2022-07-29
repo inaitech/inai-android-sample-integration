@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">android-sample-integration</string>
+    <string name="product_image">Product Image</string>
+    <string name="inai_logo">Inai Logo</string>
+    <string name="product_description">A FAN JERSEY INSPIRED BY A LEGENDARY HOME KIT.\nYouth. Courage. Success. The thee pillars of Manchester United\'s motto have brought the club more than a century of triumphs. With its clean red design and white ribbed crewneck, this juniors\' adidas football jersey takes inspiration from the iconic kit that carried them to some of their most memorable moments. Made for fans, its soft fabric and moisture-absorbing AEROREADY keep you comfortable. A devil signoff on the back shows your pride.\n\nThis product is made with Primegreen, a series of high-performance recycled materials.</string>
+
+    <string name="Pay">Pay</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="product_title">MANCHESTER UNITED 21/22 HOME JERSEY</string>
 </resources>
