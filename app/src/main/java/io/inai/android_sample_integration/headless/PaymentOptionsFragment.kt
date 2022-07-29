@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import io.inai.android_sample_integration.model.*
 import kotlinx.android.synthetic.main.fragment_payment_options.*
 import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
+import java.io.Serializable
 
 
 class PaymentOptionsFragment : Fragment() {
@@ -26,7 +28,6 @@ class PaymentOptionsFragment : Fragment() {
 
     companion object {
         const val ARG_PAYMENT_OPTION = "arg_payment_option"
-        const val ARG_PAYMENT_METHOD_ID = "arg-payment_method_id"
     }
 
     override fun onCreateView(
@@ -44,6 +45,7 @@ class PaymentOptionsFragment : Fragment() {
         }
         paymentOptionsAdapter.clickListener = { paymentMethodOption ->
             //  Navigate to payments screen
+            goToPaymentScreen(paymentMethodOption)
         }
 
         rv_payment_options.apply {
@@ -79,6 +81,7 @@ class PaymentOptionsFragment : Fragment() {
         val paymentOptionsResult = json.decodeFromString<PaymentOptionsResult>(response)
         if (paymentOptionsResult.paymentMethodOptions.isNullOrEmpty()) {
             //  Show message payment options are not available
+            showAlert("Payment options are not available")
         } else {
             // We do not need apple_pay to be shown on android app since apple pay will bot work on android.
             val filteredList = paymentOptionsResult.paymentMethodOptions.filter {
@@ -91,5 +94,15 @@ class PaymentOptionsFragment : Fragment() {
     private fun showPaymentOptions(paymentMethodOptions: List<PaymentMethodOption>) {
         ll_payment_options.visibility = View.VISIBLE
         paymentOptionsAdapter.addList(paymentMethodOptions)
+    }
+
+    private fun goToPaymentScreen(paymentMethodOption: PaymentMethodOption) {
+        val bundle = Bundle().apply {
+            putSerializable(ARG_PAYMENT_OPTION, paymentMethodOption as Serializable)
+        }
+        findNavController().navigate(
+            R.id.action_paymentOptionsFragment_to_paymentFieldsFragment,
+            bundle
+        )
     }
 }

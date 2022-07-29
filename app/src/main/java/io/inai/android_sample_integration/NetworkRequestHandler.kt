@@ -8,12 +8,12 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
-import kotlin.Exception
 
 object NetworkRequestHandler {
 
     private const val GET: String = "GET"
     private const val POST: String = "POST"
+    private const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
 
     fun makeGetRequest(
         url: String?,
@@ -38,7 +38,7 @@ object NetworkRequestHandler {
         //  the failure cases. This eliminates the need of multiple try/catch blocks.
         val errorHandler = CoroutineExceptionHandler { context, error ->
             //  Parse the error as a Result.Failure object and send it in the callback.
-            val errorResponse = Result.Failure(error.localizedMessage ?: "")
+            val errorResponse = Result.Failure(error.localizedMessage ?: UNKNOWN_ERROR)
             resultCallback(errorResponse)
         }
         //  Initialize a coroutine scope with a job and a error handler.
@@ -58,7 +58,9 @@ object NetworkRequestHandler {
                     resultCallback(successResponse)
                 }
             } else {
-                throw Exception(conn.responseMessage)
+                //  Parse the error as a Result.Failure object and send it in the callback.
+                val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
+                resultCallback(errorResponse)
             }
         }
     }
@@ -92,7 +94,7 @@ object NetworkRequestHandler {
         //  the failure cases. This eliminates the need of multiple try/catch blocks.
         val errorHandler = CoroutineExceptionHandler { context, error ->
             //  Parse the error as a Result.Failure object and send it in the callback.
-            val errorResponse = Result.Failure(error.localizedMessage ?: "")
+            val errorResponse = Result.Failure(error.localizedMessage ?: UNKNOWN_ERROR)
             resultCallback(errorResponse)
         }
         //  Initialize a coroutine scope with a job and a error handler.
@@ -116,7 +118,9 @@ object NetworkRequestHandler {
                     resultCallback(successResponse)
                 }
             } else {
-                throw Exception(conn.responseMessage)
+                //  Parse the error as a Result.Failure object and send it in the callback.
+                val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
+                resultCallback(errorResponse)
             }
         }
     }

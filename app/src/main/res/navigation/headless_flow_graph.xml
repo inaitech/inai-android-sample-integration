@@ -31,5 +31,15 @@
         android:label="fragment_payment_options"
         tools:layout="@layout/fragment_payment_options">
 
+        <action
+            android:id="@+id/action_paymentOptionsFragment_to_paymentFieldsFragment"
+            app:destination="@id/paymentFieldsFragment"
+            app:popUpTo="@id/checkoutFragment"
+            app:popUpToInclusive="false" />
     </fragment>
+    <fragment
+        android:id="@+id/paymentFieldsFragment"
+        android:name="io.inai.android_sample_integration.headless.PaymentFieldsFragment"
+        android:label="fragment_payment_fields"
+        tools:layout="@layout/fragment_payment_fields" />
 </navigation>
