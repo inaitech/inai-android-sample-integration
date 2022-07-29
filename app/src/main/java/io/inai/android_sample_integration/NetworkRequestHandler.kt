@@ -148,7 +148,7 @@ object NetworkRequestHandler {
     //  or a Failure instance. This eliminates the need for separate callbacks
     //  for success and failure cases.
     sealed class Result {
-        class Failure(val message: String) : Result()
         class Success(val message: String) : Result()
+        class Failure(val message: String) : Result()
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/headless_flow_graph"
+    app:startDestination="@id/headlessFragment">
+
+    <fragment
+        android:id="@+id/headlessFragment"
+        android:name="io.inai.android_sample_integration.headless.HeadlessFragment"
+        android:label="fragment_headless"
+        tools:layout="@layout/fragment_headless">
+        <action
+            android:id="@+id/action_headlessFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="io.inai.android_sample_integration.headless.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout">
+        <action
+            android:id="@+id/action_checkoutFragment_to_paymentOptionsFragment"
+            app:destination="@id/paymentOptionsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/paymentOptionsFragment"
+        android:name="io.inai.android_sample_integration.headless.PaymentOptionsFragment"
+        android:label="fragment_payment_options"
+        tools:layout="@layout/fragment_payment_options">
+
+    </fragment>
+</navigation>
