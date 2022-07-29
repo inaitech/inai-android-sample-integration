@@ -61,11 +61,14 @@ object Orders {
                 first_name = "Dev",
                 last_name = "Smith",
                 contact_number = "01010101010",
-                id = customerId
+                id = "47757c31-af65-42ce-8536-6c0492b6237e"
             ),
             metadata = JsonObject(
                 mapOf(
-                    "test_order_id" to JsonPrimitive("test_order")
+                    "test_order_id" to JsonPrimitive("test_order"),
+                    "vat" to JsonPrimitive("6"),
+                    "tax_percentage" to JsonPrimitive("12"),
+                    "taxable_amount" to JsonPrimitive("50")
                 )
             )
         )

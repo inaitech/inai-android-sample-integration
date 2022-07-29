@@ -9,7 +9,15 @@ import androidx.navigation.fragment.findNavController
 import io.inai.android_sample_integration.R
 import kotlinx.android.synthetic.main.fragment_headless.*
 
+enum class HeadlessOperation(){
+    MakePayment, PayWithSavedPaymentMethod
+}
+
 class HeadlessFragment : Fragment() {
+
+    companion object {
+        const val ARG_HEADLESS_OPERATION = "arg_payment_option"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,8 +29,19 @@ class HeadlessFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         btn_make_payment.setOnClickListener {
-            findNavController().navigate(R.id.action_headlessFragment_to_checkoutFragment)
+            findNavController().navigate(
+                R.id.action_headlessFragment_to_checkoutFragment,
+                Bundle().apply { putSerializable(ARG_HEADLESS_OPERATION, HeadlessOperation.MakePayment) }
+            )
+        }
+
+        btn_saved_payment_method.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_headlessFragment_to_checkoutFragment,
+                Bundle().apply { putSerializable(ARG_HEADLESS_OPERATION, HeadlessOperation.PayWithSavedPaymentMethod) }
+            )
         }
     }
 }

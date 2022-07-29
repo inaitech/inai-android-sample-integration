@@ -7,4 +7,6 @@
     <string name="Pay">Pay</string>
     <string name="buy_now">Buy Now</string>
     <string name="product_title">MANCHESTER UNITED 21/22 HOME JERSEY</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
