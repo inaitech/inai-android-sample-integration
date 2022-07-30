@@ -1,9 +1,7 @@
-package io.inai.android_sample_integration
+package io.inai.android_sample_integration.helpers
 
-import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import kotlinx.serialization.json.Json
 

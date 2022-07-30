@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration
+package io.inai.android_sample_integration.helpers
 
 import android.util.Base64
 import kotlinx.coroutines.*

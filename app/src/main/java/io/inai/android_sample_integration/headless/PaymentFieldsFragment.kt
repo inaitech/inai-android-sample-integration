@@ -12,10 +12,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
-import io.inai.android_sample_integration.Orders.orderId
+import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.model.FormField
 import io.inai.android_sample_integration.model.PaymentMethodOption
-import io.inai.android_sample_integration.showAlert
+import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_payment_fields.*
 import org.json.JSONArray

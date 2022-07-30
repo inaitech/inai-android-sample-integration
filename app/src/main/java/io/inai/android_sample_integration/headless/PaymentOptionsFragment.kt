@@ -11,10 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.*
 import io.inai.android_sample_integration.Config.countryCode
-import io.inai.android_sample_integration.Orders.authenticationString
-import io.inai.android_sample_integration.Orders.customerId
-import io.inai.android_sample_integration.Orders.orderId
-import io.inai.android_sample_integration.Orders.prepareOrder
+import io.inai.android_sample_integration.helpers.NetworkRequestHandler
+import io.inai.android_sample_integration.helpers.Orders.authenticationString
+import io.inai.android_sample_integration.helpers.Orders.customerId
+import io.inai.android_sample_integration.helpers.Orders.orderId
+import io.inai.android_sample_integration.helpers.Orders.prepareOrder
+import io.inai.android_sample_integration.helpers.json
+import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sample_integration.model.*
 import kotlinx.android.synthetic.main.fragment_payment_options.*
 import kotlinx.serialization.decodeFromString
