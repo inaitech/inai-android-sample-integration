@@ -59,8 +59,10 @@ object NetworkRequestHandler {
                 }
             } else {
                 //  Parse the error as a Result.Failure object and send it in the callback.
-                val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
-                resultCallback(errorResponse)
+                coroutineScope.launch(Dispatchers.Main) {
+                    val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
+                    resultCallback(errorResponse)
+                }
             }
         }
     }
@@ -119,8 +121,11 @@ object NetworkRequestHandler {
                 }
             } else {
                 //  Parse the error as a Result.Failure object and send it in the callback.
-                val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
-                resultCallback(errorResponse)
+                coroutineScope.launch(Dispatchers.Main) {
+                    val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
+                    resultCallback(errorResponse)
+                }
+
             }
         }
     }
