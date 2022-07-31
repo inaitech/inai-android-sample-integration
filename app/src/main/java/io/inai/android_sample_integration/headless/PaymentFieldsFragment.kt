@@ -15,6 +15,7 @@ import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.helpers.CardInfoHelper
 import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
 import io.inai.android_sample_integration.helpers.Orders.orderId
+import io.inai.android_sample_integration.helpers.ValidateFieldsHelper
 import io.inai.android_sample_integration.model.FormField
 import io.inai.android_sample_integration.model.PaymentMethodOption
 import io.inai.android_sample_integration.helpers.showAlert
@@ -32,8 +33,8 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
+    private lateinit var validateFieldsHelper: ValidateFieldsHelper
     private val paymentDetails = JSONObject()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,12 +48,14 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         paymentMethodOption =
             arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
-
+        validateFieldsHelper = ValidateFieldsHelper(requireContext())
         createFormFields()
 
         btn_proceed.setOnClickListener {
             generatePaymentDetails()
-            makeHeadlessPayment()
+            validateFieldsHelper.validateFields(paymentMethodOption.railCode, paymentDetails) {
+                makeHeadlessPayment()
+            }
         }
     }
 
@@ -170,14 +173,14 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
                 showAlert("Payment Success! ${result.data}")
             }
             InaiPaymentStatus.Failed -> {
-                showAlert("Payment Success! ${result.data}")
+                showAlert("Payment Failed! ${result.data}")
             }
             InaiPaymentStatus.Canceled -> {
                 var message = "Payment Canceled!"
                 if (result.data.has("message")) {
                     message = result.data.getString("message")
                 }
-                showAlert("Payment Success! ${result.data}")
+                showAlert(message)
             }
         }
     }
