@@ -6,7 +6,10 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 
-//  This class implements TextWatcher interface and formats card expiry date into the format MM/YY
+/**
+ *  This class implements TextWatcher interface and formats card expiry date into the format MM/YY
+ *  @param editText The input field to observe input and format it.
+ */
 class ExpiryDateFormatter(private val editText: EditText) : TextWatcher {
     //   Variable to keep track of the formatted string.
     private var formattedExpiryDate = ""

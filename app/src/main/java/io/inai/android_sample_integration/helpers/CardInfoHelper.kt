@@ -13,8 +13,12 @@ import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sdk.*
 import org.json.JSONObject
 
-// An inner class which implements both the TextWatcher and InaiCardInfoDelegate interfaces
-// to monitor card number entries and validate them.
+/**
+ *  An inner class which implements both the TextWatcher and InaiCardInfoDelegate interfaces
+ *  - Monitor card number entry.
+ *  - Verify card number and fetch details of card.
+ *  - Display brand logo.
+ */
 class CardInfoHelper(private val editText: EditText, private val context: Context) : TextWatcher, InaiCardInfoDelegate {
     //  Internal boolean which is set to true once cardInfo is fetched.
     //  This prevents multiple api calls on consequent user input.
