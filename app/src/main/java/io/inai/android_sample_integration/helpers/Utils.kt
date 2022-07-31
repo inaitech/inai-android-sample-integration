@@ -1,5 +1,6 @@
 package io.inai.android_sample_integration.helpers
 
+import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -31,7 +32,7 @@ fun capitalizeFirst(word: String): String {
 val json = Json { ignoreUnknownKeys = true }
 
 /**
- * Alert Dialog
+ * Alert Dialogs
  */
 fun Fragment.showAlert(message: String) {
     val alertBuilder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
@@ -42,6 +43,21 @@ fun Fragment.showAlert(message: String) {
         "Ok"
     ) { dialog, _ ->
         findNavController().navigateUp()
+    }
+
+    val alertDialog: AlertDialog = alertBuilder.create()
+    alertDialog.show()
+}
+
+fun Context.showAlert(message: String) {
+    val alertBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
+    alertBuilder.setMessage(message)
+    alertBuilder.setCancelable(true)
+
+    alertBuilder.setPositiveButton(
+        "Ok"
+    ) { dialog, _ ->
+        dialog.dismiss()
     }
 
     val alertDialog: AlertDialog = alertBuilder.create()

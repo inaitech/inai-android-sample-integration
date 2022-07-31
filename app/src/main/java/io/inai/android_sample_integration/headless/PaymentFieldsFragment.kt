@@ -12,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
+import io.inai.android_sample_integration.helpers.CardInfoHelper
 import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.model.FormField
 import io.inai.android_sample_integration.model.PaymentMethodOption
@@ -22,7 +23,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
+class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
 
     companion object {
         const val FIELD_TYPE_CHECKBOX = "checkbox"
@@ -76,6 +77,11 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
         inputTextField.inputType = InputType.TYPE_CLASS_TEXT
         inputTextField.hint = formField.placeholder
         inputTextField.tag = formField.name
+
+        // Add card related textWatchers if fields are for card details
+        if (formField.name == "number") {
+            inputTextField.addTextChangedListener(CardInfoHelper(inputTextField, requireContext()))
+        }
 
         val layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
