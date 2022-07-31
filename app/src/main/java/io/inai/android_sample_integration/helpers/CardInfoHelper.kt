@@ -55,7 +55,7 @@ class CardInfoHelper(private val editText: EditText, private val context: Contex
                 editText.setCompoundDrawablesWithIntrinsicBounds(null, null, logo, null)
             }
             InaiCardInfoStatus.Failed -> {
-                    context.showAlert("Card Info Fail Result : ${result.data}")
+                context.showAlert("Card Info Fail Result : ${result.data}")
             }
         }
     }
@@ -77,7 +77,7 @@ class CardInfoHelper(private val editText: EditText, private val context: Contex
                 )
             } catch (ex: Exception) {
                 //  Handle initialisation error
-                    context.showAlert("Error while initialising sdk : $ex.message")
+                context.showAlert("Error while initialising sdk : $ex.message")
             }
         }
 

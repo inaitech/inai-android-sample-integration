@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.helpers.CardInfoHelper
+import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
 import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.model.FormField
 import io.inai.android_sample_integration.model.PaymentMethodOption
@@ -81,6 +82,8 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         // Add card related textWatchers if fields are for card details
         if (formField.name == "number") {
             inputTextField.addTextChangedListener(CardInfoHelper(inputTextField, requireContext()))
+        } else if (formField.name == "expiry") {
+            inputTextField.addTextChangedListener(ExpiryDateFormatter(inputTextField))
         }
 
         val layoutParams = LinearLayout.LayoutParams(
