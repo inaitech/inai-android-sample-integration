@@ -2,6 +2,7 @@ package io.inai.android_sample_integration.helpers
 
 import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.Config
+import io.inai.android_sample_integration.Config.customerId
 import io.inai.android_sample_integration.Config.inaiPassword
 import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.model.OrderCustomer
@@ -19,8 +20,6 @@ object Orders {
     val authenticationString
         get() = NetworkRequestHandler.getEncodedAuthString(inaiToken, inaiPassword)
     var orderId: String = ""
-        private set
-    var customerId = ""
         private set
 
     /***

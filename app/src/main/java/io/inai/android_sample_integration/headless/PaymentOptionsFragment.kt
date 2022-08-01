@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.*
 import io.inai.android_sample_integration.Config.countryCode
-import io.inai.android_sample_integration.helpers.Orders.customerId
+import io.inai.android_sample_integration.Config.customerId
 import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.helpers.Orders.prepareOrder
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
