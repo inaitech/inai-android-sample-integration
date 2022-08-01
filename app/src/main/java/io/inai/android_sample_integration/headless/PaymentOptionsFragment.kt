@@ -103,7 +103,9 @@ class PaymentOptionsFragment : Fragment() {
                         PARAM_COUNTRY_CODE to countryCode,
                         PARAM_SAVED_PAYMENT_METHOD to "true"
                     )
+                    (activity as HeadlessActivity).showProgress()
                     paymentOptionsHelper.fetchPaymentOptions(queryParamMap) { paymentOptionsList ->
+                        (activity as HeadlessActivity).hideProgress()
                         //  Filters the paymentMethodOptions to get the payment fields for the selected
                         //  savedPaymentMethodType and passes it on to the PaymentsScreen.
                         val paymentOption = paymentOptionsList.single { it.railCode == savedPaymentMethodType }
@@ -132,6 +134,7 @@ class PaymentOptionsFragment : Fragment() {
      *  prepared.
      */
     private fun prepareOrder() {
+        (activity as HeadlessActivity).showProgress()
         when (headlessOperation) {
             HeadlessOperation.MakePayment -> prepareOrder {
                 val queryParamMap = mapOf(
@@ -141,6 +144,7 @@ class PaymentOptionsFragment : Fragment() {
                 //  This function parses the payment options result, filters out "apple_pay" rail codes
                 //  adds the list to the adapter.
                 paymentOptionsHelper.fetchPaymentOptions(queryParamMap) { paymentOptionsList ->
+                    (activity as HeadlessActivity).hideProgress()
                     // We do not need apple_pay to be shown on android app since apple pay will not work on android.
                     val filteredList = paymentOptionsList.filter {
                         it.railCode != "apple_pay"
@@ -152,6 +156,7 @@ class PaymentOptionsFragment : Fragment() {
                 //  This function parses the payment methods result, filters out "apple_pay" rail codes
                 //   adds the list to the adapter.
                 paymentOptionsHelper.fetchSavedPaymentMethods(customerId) { paymentMethodsList ->
+                    (activity as HeadlessActivity).hideProgress()
                     val filteredList = paymentMethodsList.filter {
                         it.type != "apple_pay"
                     }
