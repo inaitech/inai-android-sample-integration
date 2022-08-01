@@ -62,7 +62,7 @@ object Orders {
                 first_name = "Dev",
                 last_name = "Smith",
                 contact_number = "01010101010",
-                id = "cust_2Cd8MEpfqG1uveK3bIjEXguheon"
+                id = customerId
             ),
             metadata = JsonObject(
                 mapOf(
