@@ -17,6 +17,7 @@ import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.helpers.Orders.prepareOrder
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
 import io.inai.android_sample_integration.helpers.showAlert
+import io.inai.android_sample_integration.model.PaymentMethod
 import io.inai.android_sample_integration.model.PaymentMethodOption
 import kotlinx.android.synthetic.main.fragment_payment_options.*
 import kotlinx.serialization.encodeToString
@@ -40,6 +41,8 @@ class PaymentOptionsFragment : Fragment() {
         const val PARAM_ORDER_ID = "order_id"
         const val PARAM_COUNTRY_CODE = "country"
         const val PARAM_SAVED_PAYMENT_METHOD = "saved_payment_method"
+        const val APPLE_PAY = "apple_pay"
+        const val GOOGLE_PAY = "google_pay"
     }
 
     override fun onCreateView(
@@ -103,14 +106,17 @@ class PaymentOptionsFragment : Fragment() {
                         PARAM_COUNTRY_CODE to countryCode,
                         PARAM_SAVED_PAYMENT_METHOD to "true"
                     )
-                    (activity as HeadlessActivity).showProgress()
-                    paymentOptionsHelper.fetchPaymentOptions(queryParamMap) { paymentOptionsList ->
+                    //  Callback that specifies what to do after fetching payment options.
+                    val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
                         (activity as HeadlessActivity).hideProgress()
                         //  Filters the paymentMethodOptions to get the payment fields for the selected
                         //  savedPaymentMethodType and passes it on to the PaymentsScreen.
                         val paymentOption = paymentOptionsList.single { it.railCode == savedPaymentMethodType }
                         checkIfPaymentOptionIsGPay(paymentOption)
                     }
+
+                    (activity as HeadlessActivity).showProgress()
+                    paymentOptionsHelper.fetchPaymentOptions(queryParamMap, paymentOptionsCallback)
                 }
 
                 rv_saved_payment_methods.apply {
@@ -141,36 +147,40 @@ class PaymentOptionsFragment : Fragment() {
                     PARAM_ORDER_ID to orderId,
                     PARAM_COUNTRY_CODE to countryCode
                 )
-                //  This function parses the payment options result, filters out "apple_pay" rail codes
-                //  adds the list to the adapter.
-                paymentOptionsHelper.fetchPaymentOptions(queryParamMap) { paymentOptionsList ->
+                val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
                     (activity as HeadlessActivity).hideProgress()
                     // We do not need apple_pay to be shown on android app since apple pay will not work on android.
                     val filteredList = paymentOptionsList.filter {
-                        it.railCode != "apple_pay"
+                        it.railCode != APPLE_PAY
                     }
                     paymentOptionsAdapter.addList(filteredList)
                 }
+
+                //  This function parses the payment options result, filters out "apple_pay" rail codes
+                //  adds the list to the adapter.
+                paymentOptionsHelper.fetchPaymentOptions(queryParamMap, paymentOptionsCallback)
             }
             HeadlessOperation.PayWithSavedPaymentMethod -> prepareOrder {
-                //  This function parses the payment methods result, filters out "apple_pay" rail codes
-                //   adds the list to the adapter.
-                paymentOptionsHelper.fetchSavedPaymentMethods(customerId) { paymentMethodsList ->
+                //Callback that specifies what should be done after saved payment methods are fetched.
+                val savedPaymentMethodCallback = { paymentMethodsList: List<PaymentMethod> ->
                     (activity as HeadlessActivity).hideProgress()
                     val filteredList = paymentMethodsList.filter {
-                        it.type != "apple_pay"
+                        it.type != APPLE_PAY
                     }
                     savedPaymentMethodsAdapter.addList(filteredList)
                 }
+                //  This function parses the payment methods result, filters out "apple_pay" rail codes
+                //   adds the list to the adapter.
+                paymentOptionsHelper.fetchSavedPaymentMethods(customerId, savedPaymentMethodCallback)
             }
         }
     }
 
     private fun checkIfPaymentOptionIsGPay(paymentMethodOption: PaymentMethodOption) {
-        if (paymentMethodOption.railCode == "google_pay") {
+        if (paymentMethodOption.railCode == GOOGLE_PAY) {
             val intent = Intent(requireActivity(), GooglePayActivity::class.java)
             val jsonString = Json.encodeToString(paymentMethodOption)
-            intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS,jsonString)
+            intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS, jsonString)
             startActivity(intent)
         } else {
             //  Navigate to payments screen to proceed with the selected payment option
