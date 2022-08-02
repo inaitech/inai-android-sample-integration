@@ -64,24 +64,26 @@ class ValidateFieldsPaymentOptions : Fragment() {
 
     private fun prepareOrder() {
         (activity as HeadlessActivity).showProgress()
-        Orders.prepareOrder {
-            val queryParamMap = mapOf(
-                PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
-                PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode
-            )
-            val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
-                (activity as HeadlessActivity).hideProgress()
-                // We do not need apple_pay to be shown on android app since apple pay will not work on android.
-                val filteredList = paymentOptionsList.filter {
-                    it.railCode != PaymentOptionsFragment.APPLE_PAY
-                }
-                paymentOptionsAdapter.addList(filteredList)
-            }
+        Orders.prepareOrder { fetchPaymentOptions() }
+    }
 
-            //  This function parses the payment options result, filters out "apple_pay" rail codes
-            //  adds the list to the adapter.
-            paymentOptionsHelper.fetchPaymentOptions(queryParamMap, paymentOptionsCallback)
+    private fun fetchPaymentOptions() {
+        val queryParamMap = mapOf(
+            PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
+            PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode
+        )
+        val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
+            (activity as HeadlessActivity).hideProgress()
+            // We do not need apple_pay to be shown on android app since apple pay will not work on android.
+            val filteredList = paymentOptionsList.filter {
+                it.railCode != PaymentOptionsFragment.APPLE_PAY
+            }
+            paymentOptionsAdapter.addList(filteredList)
         }
+
+        //  This function parses the payment options result, filters out "apple_pay" rail codes
+        //  adds the list to the adapter.
+        paymentOptionsHelper.fetchPaymentOptions(queryParamMap, paymentOptionsCallback)
     }
 
     private fun goToPaymentScreen() {
