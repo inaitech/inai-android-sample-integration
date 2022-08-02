@@ -34,7 +34,6 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
-    private lateinit var validateFieldsHelper: ValidateFieldsHelper
     private val paymentDetails = JSONObject()
 
     override fun onCreateView(
@@ -49,14 +48,12 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         paymentMethodOption =
             arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
-        validateFieldsHelper = ValidateFieldsHelper(requireContext())
+
         createFormFields()
 
         btn_proceed.setOnClickListener {
             generatePaymentDetails()
-            validateFieldsHelper.validateFields(paymentMethodOption.railCode, paymentDetails) {
-                makeHeadlessPayment()
-            }
+            makeHeadlessPayment()
         }
     }
 
@@ -84,10 +81,8 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         inputTextField.hint = formField.placeholder
         inputTextField.tag = formField.name
 
-        // Add card related textWatchers if fields are for card details
-        if (formField.name == "number") {
-            inputTextField.addTextChangedListener(CardInfoHelper(inputTextField, requireContext()))
-        } else if (formField.name == "expiry") {
+        // Add card expiry textWatchers if fields are for card expiry formatting
+        if (formField.name == "expiry") {
             inputTextField.addTextChangedListener(ExpiryDateFormatter(inputTextField))
         }
 
