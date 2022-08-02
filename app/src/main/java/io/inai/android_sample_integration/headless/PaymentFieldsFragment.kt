@@ -1,6 +1,7 @@
 package io.inai.android_sample_integration.headless
 
 import android.os.Bundle
+import io.inai.android_sample_integration.R
 import android.text.*
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -11,12 +12,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
-import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.helpers.CardInfoHelper
-import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
+import io.inai.android_sample_integration.helpers.*
 import io.inai.android_sample_integration.helpers.Orders.orderId
-import io.inai.android_sample_integration.helpers.ValidateFieldsHelper
-import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sample_integration.model.FormField
 import io.inai.android_sample_integration.model.PaymentMethodOption
 import io.inai.android_sdk.*
@@ -52,8 +49,10 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         createFormFields()
 
         btn_proceed.setOnClickListener {
-            generatePaymentDetails()
-            makeHeadlessPayment()
+            if (validateFormInput()) {
+                generatePaymentDetails()
+                makeHeadlessPayment()
+            }
         }
     }
 
@@ -76,14 +75,14 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         label.tag = "label"
 
         //  Create form field inputText field
-        val inputTextField = EditText(requireContext())
-        inputTextField.inputType = InputType.TYPE_CLASS_TEXT
-        inputTextField.hint = formField.placeholder
-        inputTextField.tag = formField.name
+        val editText = FormFieldEditText(requireContext(), formField)
+        editText.inputType = InputType.TYPE_CLASS_TEXT
+        editText.hint = formField.placeholder
+        editText.tag = formField.name
 
         // Add card expiry textWatchers if fields are for card expiry formatting
         if (formField.name == "expiry") {
-            inputTextField.addTextChangedListener(ExpiryDateFormatter(inputTextField))
+            editText.addTextChangedListener(ExpiryDateFormatter(editText))
         }
 
         val layoutParams = LinearLayout.LayoutParams(
@@ -91,10 +90,10 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         layoutParams.bottomMargin = 16
-        inputTextField.layoutParams = layoutParams
+        editText.layoutParams = layoutParams
 
         formLayout.addView(label)
-        formLayout.addView(inputTextField)
+        formLayout.addView(editText)
 
     }
 
@@ -130,6 +129,29 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         formLayout.addView(spinner)
     }
 
+    private fun validateFormInput(): Boolean {
+        var areFormInputsValid = true
+        var areRequiredInputsFilled = true
+
+        paymentMethodOption.formFields.forEach {
+           if (it.fieldType != FIELD_TYPE_CHECKBOX && it.fieldType != FIELD_TYPE_SELECT ){
+               val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
+               when {
+                   !formFieldEditText.isInputValid() -> {
+                       areFormInputsValid = false
+                   }
+                   formFieldEditText.isFieldEmpty() -> {
+                       areRequiredInputsFilled = false
+                   }
+               }
+           }
+        }
+
+        if (!areFormInputsValid) requireContext().showAlert("Please fill in valid values for fields marked in red")
+        if (!areRequiredInputsFilled) requireContext().showAlert("Please fill all required fields marked with *")
+        return areFormInputsValid && areRequiredInputsFilled
+    }
+
     private fun generatePaymentDetails() {
         val fieldsArray = JSONArray()
         var paymentField: JSONObject
@@ -138,10 +160,10 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
 
             paymentField = when (it.fieldType) {
                 FIELD_TYPE_CHECKBOX -> {
-                    val inputTextFieldCheckbox = formLayout.findViewWithTag<CheckBox>(it.name)
+                    val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
                     getPaymentField(
                         it.name,
-                        inputTextFieldCheckbox?.isChecked ?: false
+                        checkbox?.isChecked ?: false
                     )
                 }
                 FIELD_TYPE_SELECT -> {
@@ -155,10 +177,10 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
                     )
                 }
                 else -> {
-                    val inputTextFieldTextBox = formLayout.findViewWithTag<EditText>(it.name)
+                    val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                     getPaymentField(
                         it.name,
-                        inputTextFieldTextBox?.text.toString()
+                        formFieldEditText?.text.toString()
                     )
                 }
             }
