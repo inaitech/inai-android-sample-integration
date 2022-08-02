@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_headlessFragment_to_checkoutFragment"
             app:destination="@id/checkoutFragment" />
+        <action
+            android:id="@+id/action_headlessFragment_to_validateFieldsPaymentOptionsFragment"
+            app:destination="@id/validateFieldsPaymentOptionsFragment" />
     </fragment>
 
     <fragment
@@ -42,4 +45,18 @@
         android:name="io.inai.android_sample_integration.headless.PaymentFieldsFragment"
         android:label="fragment_payment_fields"
         tools:layout="@layout/fragment_payment_fields" />
+    <fragment
+        android:id="@+id/validateFieldsPaymentOptionsFragment"
+        android:name="io.inai.android_sample_integration.headless.ValidateFieldsPaymentOptionsFragment"
+        android:label="fragment_validate_fields_payment_options"
+        tools:layout="@layout/fragment_validate_fields_payment_options" >
+        <action
+            android:id="@+id/action_validateFieldsPaymentOptionsFragment_to_validatePaymentFieldsFragment"
+            app:destination="@id/validatePaymentFieldsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/validatePaymentFieldsFragment"
+        android:name="io.inai.android_sample_integration.headless.ValidatePaymentFieldsFragment"
+        android:label="fragment_validate_payment_fields"
+        tools:layout="@layout/fragment_validate_payment_fields" />
 </navigation>

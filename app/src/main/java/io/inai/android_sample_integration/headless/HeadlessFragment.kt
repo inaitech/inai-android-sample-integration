@@ -43,5 +43,9 @@ class HeadlessFragment : Fragment() {
                 Bundle().apply { putSerializable(ARG_HEADLESS_OPERATION, HeadlessOperation.PayWithSavedPaymentMethod) }
             )
         }
+
+        btn_validate_fields.setOnClickListener {
+            findNavController().navigate(R.id.action_headlessFragment_to_validateFieldsPaymentOptionsFragment)
+        }
     }
 }
