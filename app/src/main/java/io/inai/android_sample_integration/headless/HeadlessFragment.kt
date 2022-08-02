@@ -9,10 +9,6 @@ import androidx.navigation.fragment.findNavController
 import io.inai.android_sample_integration.R
 import kotlinx.android.synthetic.main.fragment_headless.*
 
-enum class HeadlessOperation(){
-    MakePayment, PayWithSavedPaymentMethod
-}
-
 class HeadlessFragment : Fragment() {
 
     companion object {

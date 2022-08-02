@@ -10,11 +10,12 @@ import android.widget.Spinner
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.*
 import io.inai.android_sample_integration.model.PaymentMethodOption
-import kotlinx.android.synthetic.main.fragment_save_payment_method.*
+import kotlinx.android.synthetic.main.fragment_pay_with_saved_payment_method.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-class SavePaymentMethod : Fragment() {
+
+class PayWithSavedPaymentMethod : Fragment() {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
@@ -27,7 +28,7 @@ class SavePaymentMethod : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_save_payment_method, container, false)
+        return inflater.inflate(R.layout.fragment_pay_with_saved_payment_method, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +40,7 @@ class SavePaymentMethod : Fragment() {
         makePaymentHelper = MakePaymentHelper(requireContext())
         createFormFields()
 
-        btn_save_payment_method.setOnClickListener {
+        btn_proceed.setOnClickListener {
             if (validateFormInput()) {
                 generatePaymentDetails()
                 makePayment()
@@ -47,27 +48,28 @@ class SavePaymentMethod : Fragment() {
         }
     }
 
-
     private fun createFormFields() {
         paymentMethodOption.formFields.forEachIndexed { _, formField ->
-            //  Since, we do not need Save Card checkbox for Save Payment Method operation,
-            //  we ignore the save card field and do not show the checkbox.
-            if (formField.name == "save_card") return@forEachIndexed
-
+            //  Only required information from user is captured for this method.
+            //  since all other information will already be captured.
+            //  So we show only text input fields.
             formLayout.addView(formBuilder.createLabel(formField))
-            when (formField.fieldType) {
-                PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
-                    formLayout.addView(formBuilder.createPicker(formField))
-                }
-                else -> {
-                    val editText = formBuilder.createTextField(formField)
-                    // Add card expiry textWatchers if fields are for card expiry formatting
-                    if (formField.name == "expiry") {
-                        editText.addTextChangedListener(ExpiryDateFormatter(editText))
+            if (formField.fieldType != PaymentFieldsFragment.FIELD_TYPE_SELECT &&
+                formField.fieldType != PaymentFieldsFragment.FIELD_TYPE_CHECKBOX
+            )
+                when (formField.fieldType) {
+                    PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
+                        formLayout.addView(formBuilder.createPicker(formField))
                     }
-                    formLayout.addView(editText)
+                    else -> {
+                        val editText = formBuilder.createTextField(formField)
+                        // Add card expiry textWatchers if fields are for card expiry formatting
+                        if (formField.name == "expiry") {
+                            editText.addTextChangedListener(ExpiryDateFormatter(editText))
+                        }
+                        formLayout.addView(editText)
+                    }
                 }
-            }
         }
     }
 
@@ -93,7 +95,6 @@ class SavePaymentMethod : Fragment() {
         if (!areRequiredInputsFilled) requireContext().showAlert("Please fill all required fields marked with *")
         return areFormInputsValid && areRequiredInputsFilled
     }
-
 
     private fun generatePaymentDetails() {
         val fieldsArray = JSONArray()
@@ -123,14 +124,6 @@ class SavePaymentMethod : Fragment() {
 
             fieldsArray.put(paymentField)
         }
-
-        //  Since we are saving a payment method, the value will always
-        //  be true for field type save_card. So we do not check for the
-        //  field type explicitly. Instead we dirctly add it to the JSON Array.
-        fieldsArray.put(
-            getPaymentField("save_card", true)
-        )
-
         paymentDetails.put("fields", fieldsArray)
     }
 
@@ -151,5 +144,4 @@ class SavePaymentMethod : Fragment() {
             paymentMethodOption.railCode, paymentDetails, makePaymentResultCallback
         )
     }
-
 }

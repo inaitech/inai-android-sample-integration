@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_checkoutFragment_to_paymentOptionsFragment"
             app:destination="@id/paymentOptionsFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_payWithSavedPaymentOptions"
+            app:destination="@id/payWithSavedPaymentOptions" />
     </fragment>
 
     <fragment
@@ -77,4 +80,19 @@
         android:name="io.inai.android_sample_integration.headless.SavePaymentMethod"
         android:label="fragment_save_payment_method"
         tools:layout="@layout/fragment_save_payment_method" />
+    <fragment
+        android:id="@+id/payWithSavedPaymentOptions"
+        android:name="io.inai.android_sample_integration.headless.PayWithSavedPaymentOptions"
+        android:label="fragment_pay_with_saved_payment_options"
+        tools:layout="@layout/fragment_pay_with_saved_payment_options" >
+        <action
+            android:id="@+id/action_payWithSavedPaymentOptions_to_payWithSavedPaymentMethod"
+            app:destination="@id/payWithSavedPaymentMethod"
+            app:popUpTo="@id/checkoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/payWithSavedPaymentMethod"
+        android:name="io.inai.android_sample_integration.headless.PayWithSavedPaymentMethod"
+        android:label="fragment_pay_with_saved_payment_method"
+        tools:layout="@layout/fragment_pay_with_saved_payment_method" />
 </navigation>
