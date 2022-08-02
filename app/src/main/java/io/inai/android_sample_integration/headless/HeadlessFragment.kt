@@ -37,6 +37,10 @@ class HeadlessFragment : Fragment() {
             )
         }
 
+        btn_save_payment_method.setOnClickListener {
+            findNavController().navigate(R.id.action_headlessFragment_to_savePaymentMethodPaymentOptions)
+        }
+
         btn_saved_payment_method.setOnClickListener {
             findNavController().navigate(
                 R.id.action_headlessFragment_to_checkoutFragment,

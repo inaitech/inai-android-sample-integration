@@ -19,8 +19,17 @@ object Orders {
     private const val inaiBackendOrdersUrl: String = BuildConfig.InaiBaseUrl + "orders"
     val authenticationString
         get() = NetworkRequestHandler.getEncodedAuthString(inaiToken, inaiPassword)
+    //  A map that can be added to a JSON object as metadata for Order creation.
+    //  Any key,value pair can be added to this map before creating an order.
+    val metadata : Map<String,JsonPrimitive> = mutableMapOf(
+        "test_order_id" to JsonPrimitive("test_order"),
+        "vat" to JsonPrimitive("6"),
+        "tax_percentage" to JsonPrimitive("12"),
+        "taxable_amount" to JsonPrimitive("50")
+    )
     var orderId: String = ""
         private set
+
 
     /***
      *  Order Creation
@@ -63,14 +72,7 @@ object Orders {
                 contact_number = "01010101010",
                 id = customerId
             ),
-            metadata = JsonObject(
-                mapOf(
-                    "test_order_id" to JsonPrimitive("test_order"),
-                    "vat" to JsonPrimitive("6"),
-                    "tax_percentage" to JsonPrimitive("12"),
-                    "taxable_amount" to JsonPrimitive("50")
-                )
-            )
+            metadata = JsonObject(metadata)
         )
     }
 }

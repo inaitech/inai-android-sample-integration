@@ -18,7 +18,7 @@ import io.inai.android_sample_integration.model.PaymentMethodOption
 import kotlinx.android.synthetic.main.fragment_payment_options.*
 import java.io.Serializable
 
-class ValidateFieldsPaymentOptionsFragment : Fragment() {
+class ValidateFieldsPaymentOptions : Fragment() {
 
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
     private val paymentOptionsHelper = PaymentOptionsHelper()

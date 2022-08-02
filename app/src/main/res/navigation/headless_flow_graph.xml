@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_headlessFragment_to_validateFieldsPaymentOptionsFragment"
             app:destination="@id/validateFieldsPaymentOptionsFragment" />
+        <action
+            android:id="@+id/action_headlessFragment_to_savePaymentMethodPaymentOptions"
+            app:destination="@id/savePaymentMethodPaymentOptions" />
     </fragment>
 
     <fragment
@@ -47,7 +50,7 @@
         tools:layout="@layout/fragment_payment_fields" />
     <fragment
         android:id="@+id/validateFieldsPaymentOptionsFragment"
-        android:name="io.inai.android_sample_integration.headless.ValidateFieldsPaymentOptionsFragment"
+        android:name="io.inai.android_sample_integration.headless.ValidateFieldsPaymentOptions"
         android:label="fragment_validate_fields_payment_options"
         tools:layout="@layout/fragment_validate_fields_payment_options" >
         <action
@@ -56,7 +59,22 @@
     </fragment>
     <fragment
         android:id="@+id/validatePaymentFieldsFragment"
-        android:name="io.inai.android_sample_integration.headless.ValidatePaymentFieldsFragment"
+        android:name="io.inai.android_sample_integration.headless.ValidatePaymentFields"
         android:label="fragment_validate_payment_fields"
         tools:layout="@layout/fragment_validate_payment_fields" />
+    <fragment
+        android:id="@+id/savePaymentMethodPaymentOptions"
+        android:name="io.inai.android_sample_integration.headless.SavePaymentMethodPaymentOptions"
+        android:label="fragment_save_payment_method_payment_options"
+        tools:layout="@layout/fragment_save_payment_method_payment_options" >
+        <action
+            android:id="@+id/action_savePaymentMethodPaymentOptions_to_savePaymentMethod"
+            app:destination="@id/savePaymentMethod"
+            app:popUpTo="@id/headlessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/savePaymentMethod"
+        android:name="io.inai.android_sample_integration.headless.SavePaymentMethod"
+        android:label="fragment_save_payment_method"
+        tools:layout="@layout/fragment_save_payment_method" />
 </navigation>
