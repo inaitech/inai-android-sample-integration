@@ -2,19 +2,15 @@ package io.inai.android_sample_integration.headless
 
 import android.os.Bundle
 import io.inai.android_sample_integration.R
-import android.text.*
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.helpers.*
 import io.inai.android_sample_integration.helpers.Orders.orderId
-import io.inai.android_sample_integration.model.FormField
 import io.inai.android_sample_integration.model.PaymentMethodOption
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_payment_fields.*
@@ -31,6 +27,7 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
+    private lateinit var formBuilder: FormBuilder
     private val paymentDetails = JSONObject()
 
     override fun onCreateView(
@@ -45,7 +42,7 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
         paymentMethodOption =
             arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
-
+        formBuilder = FormBuilder(requireContext())
         createFormFields()
 
         btn_proceed.setOnClickListener {
@@ -58,75 +55,24 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
 
     private fun createFormFields() {
         paymentMethodOption.formFields.forEachIndexed { _, formField ->
+            formLayout.addView(formBuilder.createLabel(formField))
             when (formField.fieldType) {
-                FIELD_TYPE_CHECKBOX -> createCheckBox(formField)
-                FIELD_TYPE_SELECT -> createSpinner(formField)
-                else -> createTextField(formField)
+                FIELD_TYPE_CHECKBOX -> {
+                    formLayout.addView(formBuilder.createCheckBox(formField))
+                }
+                FIELD_TYPE_SELECT -> {
+                    formLayout.addView(formBuilder.createPicker(formField))
+                }
+                else -> {
+                    val editText = formBuilder.createTextField(formField)
+                    // Add card expiry textWatchers if fields are for card expiry formatting
+                    if (formField.name == "expiry") {
+                        editText.addTextChangedListener(ExpiryDateFormatter(editText))
+                    }
+                    formLayout.addView(editText)
+                }
             }
         }
-    }
-
-    private fun createTextField(formField: FormField) {
-        //  Create form field label
-        val label = TextView(requireContext())
-        label.text = formField.label + if (formField.required) "*" else ""
-        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-        label.setTextColor(ResourcesCompat.getColor(resources, R.color.black, null))
-        label.tag = "label"
-
-        //  Create form field inputText field
-        val editText = FormFieldEditText(requireContext(), formField)
-        editText.inputType = InputType.TYPE_CLASS_TEXT
-        editText.hint = formField.placeholder
-        editText.tag = formField.name
-
-        // Add card expiry textWatchers if fields are for card expiry formatting
-        if (formField.name == "expiry") {
-            editText.addTextChangedListener(ExpiryDateFormatter(editText))
-        }
-
-        val layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        layoutParams.bottomMargin = 16
-        editText.layoutParams = layoutParams
-
-        formLayout.addView(label)
-        formLayout.addView(editText)
-
-    }
-
-    private fun createCheckBox(formField: FormField) {
-        val checkBox = CheckBox(requireContext())
-        checkBox.text = formField.label
-        checkBox.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-        checkBox.tag = formField.name
-        formLayout.addView(checkBox)
-    }
-
-    private fun createSpinner(formField: FormField) {
-        val label = TextView(requireContext())
-        label.text = formField.label + if (formField.required) "*" else ""
-        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-        label.setTextColor(ResourcesCompat.getColor(resources, R.color.black, null))
-        label.tag = "label"
-
-        val spinner = Spinner(requireContext())
-        val countryList: List<String> = formField.data!!.values!!.map {
-            it.label
-        }
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        val adapter: ArrayAdapter<String> = ArrayAdapter(
-            requireContext(), android.R.layout.simple_spinner_dropdown_item,
-            countryList.toMutableList()
-        )
-        spinner.tag = formField.name
-        spinner.adapter = adapter
-        spinner.prompt = formField.label
-
-        formLayout.addView(label)
-        formLayout.addView(spinner)
     }
 
     private fun validateFormInput(): Boolean {
@@ -137,18 +83,17 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
            if (it.fieldType != FIELD_TYPE_CHECKBOX && it.fieldType != FIELD_TYPE_SELECT ){
                val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                when {
-                   !formFieldEditText.isInputValid() -> {
+                   formFieldEditText.isInvalidInput() -> {
                        areFormInputsValid = false
+                       return@forEach
                    }
                    formFieldEditText.isFieldEmpty() -> {
                        areRequiredInputsFilled = false
+                       return@forEach
                    }
                }
            }
         }
-
-        if (!areFormInputsValid) requireContext().showAlert("Please fill in valid values for fields marked in red")
-        if (!areRequiredInputsFilled) requireContext().showAlert("Please fill all required fields marked with *")
         return areFormInputsValid && areRequiredInputsFilled
     }
 

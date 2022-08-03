@@ -3,34 +3,47 @@ package io.inai.android_sample_integration.helpers
 import android.content.Context
 import android.content.res.ColorStateList
 import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
-import androidx.core.widget.doAfterTextChanged
+import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.model.FormField
-import io.inai.android_sdk.R
 import java.util.regex.Pattern
 
 class FormFieldEditText(context: Context, formField: FormField) : AppCompatEditText(context) {
 
-    private lateinit var formField: FormField
-    private var isInputValid = false
-    private val errorInputColor =ResourcesCompat.getColor(resources, R.color.teal_200, null)
-    private val validInputColor =ResourcesCompat.getColor(resources, R.color.teal_200, null)
+    private var formField: FormField
+    private var isInvalidInput = false
+    private val errorInputColor = ResourcesCompat.getColor(resources, R.color.red_400, null)
+    private val validInputColor = ResourcesCompat.getColor(resources, R.color.teal_200, null)
+    private val textWatcher = object : TextWatcher{
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-    init{
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if (!text.isNullOrEmpty()) {
+                verifyInputLength(text.toString())
+                verifyInputWithRegex(text.toString())
+            }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+
+        }
+    }
+
+    init {
         this.formField = formField
         initTextChangedListener()
     }
 
-    private fun initTextChangedListener(){
-        doAfterTextChanged { editText: Editable? ->
-            verifyInputLength(editText.toString())
-            verifyInputWithRegex(editText.toString())
-        }
+    private fun initTextChangedListener() {
+       addTextChangedListener(textWatcher)
     }
 
-    private fun verifyInputLength(input: String){
+    private fun verifyInputLength(input: String) {
         val maxLength = formField.validations.max_length ?: 0
         val minLength = formField.validations.min_length ?: 0
         if (maxLength != 0 && minLength != 0) {
@@ -42,7 +55,7 @@ class FormFieldEditText(context: Context, formField: FormField) : AppCompatEditT
         }
     }
 
-    private fun verifyInputWithRegex(input: String){
+    private fun verifyInputWithRegex(input: String) {
         val inputRegex = Pattern.compile(formField.validations.input_mask_regex ?: ".*")
         if (!inputRegex.matcher(input).matches())
             showErrorState()
@@ -50,21 +63,21 @@ class FormFieldEditText(context: Context, formField: FormField) : AppCompatEditT
             showValidInputState()
     }
 
-    fun isInputValid(): Boolean{
-        return isInputValid
+    fun isInvalidInput(): Boolean {
+        return isInvalidInput
     }
 
-    fun isFieldEmpty(): Boolean{
+    fun isFieldEmpty(): Boolean {
         return this.text.isNullOrEmpty()
     }
 
-    private fun showErrorState(){
+    private fun showErrorState() {
         ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(errorInputColor))
-        isInputValid = false
+        isInvalidInput = true
     }
 
-    private fun showValidInputState(){
+    private fun showValidInputState() {
         ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(validInputColor))
-        isInputValid = true
+        isInvalidInput = false
     }
 }

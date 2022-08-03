@@ -81,18 +81,17 @@ class PayWithSavedPaymentMethod : Fragment() {
             if (it.fieldType != PaymentFieldsFragment.FIELD_TYPE_CHECKBOX && it.fieldType != PaymentFieldsFragment.FIELD_TYPE_SELECT) {
                 val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                 when {
-                    !formFieldEditText.isInputValid() -> {
+                    !formFieldEditText.isInvalidInput() -> {
                         areFormInputsValid = false
+                        return@forEach
                     }
                     formFieldEditText.isFieldEmpty() -> {
                         areRequiredInputsFilled = false
+                        return@forEach
                     }
                 }
             }
         }
-
-        if (!areFormInputsValid) requireContext().showAlert("Please fill in valid values for fields marked in red")
-        if (!areRequiredInputsFilled) requireContext().showAlert("Please fill all required fields marked with *")
         return areFormInputsValid && areRequiredInputsFilled
     }
 
