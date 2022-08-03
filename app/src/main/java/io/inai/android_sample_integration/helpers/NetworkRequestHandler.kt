@@ -71,8 +71,6 @@ object NetworkRequestHandler {
                 }
             }
         }
-        //  Cancel the Coroutine Scope once the API call is completed.
-        cancelCoroutineScope()
     }
 
     fun makePostRequest(
@@ -137,8 +135,6 @@ object NetworkRequestHandler {
                 }
             }
         }
-        //  Cancel the Coroutine Scope once the API call is completed.
-        cancelCoroutineScope()
     }
 
     //  This method takes the username and password as params and encode them into

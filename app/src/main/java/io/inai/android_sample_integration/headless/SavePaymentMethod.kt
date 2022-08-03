@@ -78,7 +78,7 @@ class SavePaymentMethod : Fragment() {
             if (it.fieldType != PaymentFieldsFragment.FIELD_TYPE_CHECKBOX && it.fieldType != PaymentFieldsFragment.FIELD_TYPE_SELECT) {
                 val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                 when {
-                    !formFieldEditText.isInvalidInput() -> {
+                    formFieldEditText.isInvalidInput() -> {
                         areFormInputsValid = false
                         return@forEach
                     }

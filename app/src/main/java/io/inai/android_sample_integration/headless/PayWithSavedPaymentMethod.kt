@@ -21,6 +21,7 @@ class PayWithSavedPaymentMethod : Fragment() {
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
     private lateinit var makePaymentHelper: MakePaymentHelper
+    private lateinit var paymentMethodId: String
     private val paymentDetails = JSONObject()
 
     override fun onCreateView(
@@ -35,6 +36,8 @@ class PayWithSavedPaymentMethod : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
             arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+        paymentMethodId =
+            arguments?.getString(PaymentOptionsFragment.ARG_PAYMENT_METHOD_ID, "") ?: ""
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         makePaymentHelper = MakePaymentHelper(requireContext())
@@ -81,7 +84,7 @@ class PayWithSavedPaymentMethod : Fragment() {
             if (it.fieldType != PaymentFieldsFragment.FIELD_TYPE_CHECKBOX && it.fieldType != PaymentFieldsFragment.FIELD_TYPE_SELECT) {
                 val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                 when {
-                    !formFieldEditText.isInvalidInput() -> {
+                    formFieldEditText.isInvalidInput() -> {
                         areFormInputsValid = false
                         return@forEach
                     }
@@ -124,6 +127,8 @@ class PayWithSavedPaymentMethod : Fragment() {
             fieldsArray.put(paymentField)
         }
         paymentDetails.put("fields", fieldsArray)
+        //  Add the saved payment method ID.
+        paymentDetails.put("paymentMethodId", paymentMethodId)
     }
 
     //  Returns a JSON Object with name, value key pairs for payment details.
