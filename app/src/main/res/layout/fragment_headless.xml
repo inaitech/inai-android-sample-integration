@@ -47,4 +47,14 @@
         android:textColor="@color/white"
         />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_get_card_info"
+        android:text="Get CARD INFO"
+        android:layout_marginTop="16dp"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        />
+
 </LinearLayout>

@@ -47,5 +47,9 @@ class HeadlessFragment : Fragment() {
         btn_validate_fields.setOnClickListener {
             findNavController().navigate(R.id.action_headlessFragment_to_validateFieldsPaymentOptionsFragment)
         }
+
+        btn_get_card_info.setOnClickListener {
+            findNavController().navigate(R.id.action_headlessFragment_to_getCardInfoFragment)
+        }
     }
 }

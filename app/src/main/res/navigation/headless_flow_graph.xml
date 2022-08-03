@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_headlessFragment_to_savePaymentMethodPaymentOptions"
             app:destination="@id/savePaymentMethodPaymentOptions" />
+        <action
+            android:id="@+id/action_headlessFragment_to_getCardInfoFragment"
+            app:destination="@id/getCardInfoFragment" />
     </fragment>
 
     <fragment
@@ -95,4 +98,9 @@
         android:name="io.inai.android_sample_integration.headless.PayWithSavedPaymentMethod"
         android:label="fragment_pay_with_saved_payment_method"
         tools:layout="@layout/fragment_pay_with_saved_payment_method" />
+    <fragment
+        android:id="@+id/getCardInfoFragment"
+        android:name="io.inai.android_sample_integration.headless.GetCardInfoFragment"
+        android:label="fragment_get_card_info"
+        tools:layout="@layout/fragment_get_card_info" />
 </navigation>
