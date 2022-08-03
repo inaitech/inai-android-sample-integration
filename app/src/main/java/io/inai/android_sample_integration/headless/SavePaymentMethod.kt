@@ -149,4 +149,14 @@ class SavePaymentMethod : Fragment() {
         )
     }
 
+    /**
+     *  Fragment cycle callback.
+     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
+     */
+    override fun onStop() {
+        super.onStop()
+        NetworkRequestHandler.cancelCoroutineScope()
+        (activity as HeadlessActivity).hideProgress()
+    }
+
 }

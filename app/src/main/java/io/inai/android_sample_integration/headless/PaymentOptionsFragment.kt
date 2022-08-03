@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.*
 import io.inai.android_sample_integration.Config.countryCode
+import io.inai.android_sample_integration.helpers.NetworkRequestHandler
 import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.helpers.Orders.prepareOrder
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
@@ -116,5 +117,15 @@ class PaymentOptionsFragment : Fragment() {
             R.id.action_paymentOptionsFragment_to_paymentFieldsFragment,
             bundle
         )
+    }
+
+    /**
+     *  Fragment cycle callback.
+     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
+     */
+    override fun onStop() {
+        super.onStop()
+        NetworkRequestHandler.cancelCoroutineScope()
+        (activity as HeadlessActivity).hideProgress()
     }
 }
