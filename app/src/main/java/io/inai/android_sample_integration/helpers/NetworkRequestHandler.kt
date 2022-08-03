@@ -14,6 +14,10 @@ object NetworkRequestHandler {
     private const val GET: String = "GET"
     private const val POST: String = "POST"
     private const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
+    //  We use a coroutine scope to launch network requests and switch between threads.
+    //  The scope should always be cancelled if the operation is completed or the operation
+    //  is no more necessary.
+    private var coroutineScope : CoroutineScope? = null
 
     fun makeGetRequest(
         url: String?,
@@ -37,14 +41,16 @@ object NetworkRequestHandler {
         //  that are thrown during the network call and provides a single method to handle
         //  the failure cases. This eliminates the need of multiple try/catch blocks.
         val errorHandler = CoroutineExceptionHandler { context, error ->
-            //  Parse the error as a Result.Failure object and send it in the callback.
-            val errorResponse = Result.Failure(error.localizedMessage ?: UNKNOWN_ERROR)
-            resultCallback(errorResponse)
+            //  Parse the error as a Result.Failure object and send it in the callback on the main thread.
+           coroutineScope?.launch(Dispatchers.Main) {
+               val errorResponse = Result.Failure(error.localizedMessage ?: UNKNOWN_ERROR)
+               resultCallback(errorResponse)
+           }
         }
         //  Initialize a coroutine scope with a job and a error handler.
-        val coroutineScope = CoroutineScope(SupervisorJob() + errorHandler)
+        coroutineScope = CoroutineScope(SupervisorJob() + errorHandler)
         // Launch a child coroutine inside the parent scope on the Dispatchers.IO thread.
-        coroutineScope.launch(Dispatchers.IO) {
+        coroutineScope?.launch(Dispatchers.IO) {
             //  Make the network call.
             conn.connect()
             val responseCode: Int = conn.responseCode
@@ -54,17 +60,19 @@ object NetworkRequestHandler {
             //  and failure message will be sent back to the caller.
             if (responseCode == 201 || responseCode == 200) {
                 val successResponse = Result.Success(readResponse(conn))
-                coroutineScope.launch(Dispatchers.Main) {
+                coroutineScope?.launch(Dispatchers.Main) {
                     resultCallback(successResponse)
                 }
             } else {
                 //  Parse the error as a Result.Failure object and send it in the callback.
-                coroutineScope.launch(Dispatchers.Main) {
+                coroutineScope?.launch(Dispatchers.Main) {
                     val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
                     resultCallback(errorResponse)
                 }
             }
         }
+        //  Cancel the Coroutine Scope once the API call is completed.
+        cancelCoroutineScope()
     }
 
     fun makePostRequest(
@@ -96,13 +104,15 @@ object NetworkRequestHandler {
         //  the failure cases. This eliminates the need of multiple try/catch blocks.
         val errorHandler = CoroutineExceptionHandler { context, error ->
             //  Parse the error as a Result.Failure object and send it in the callback.
-            val errorResponse = Result.Failure(error.localizedMessage ?: UNKNOWN_ERROR)
-            resultCallback(errorResponse)
+            coroutineScope?.launch {
+                val errorResponse = Result.Failure(error.localizedMessage ?: UNKNOWN_ERROR)
+                resultCallback(errorResponse)
+            }
         }
         //  Initialize a coroutine scope with a job and a error handler.
-        val coroutineScope = CoroutineScope(SupervisorJob() + errorHandler)
+        coroutineScope = CoroutineScope(SupervisorJob() + errorHandler)
         // Launch a child coroutine inside the parent scope on the Dispatchers.IO thread.
-        coroutineScope.launch(Dispatchers.IO) {
+        coroutineScope?.launch(Dispatchers.IO) {
             //  Write the request body to the connection object output stream.
             val outputStream = DataOutputStream(conn.outputStream)
             outputStream.write(postData)
@@ -116,18 +126,19 @@ object NetworkRequestHandler {
             val responseCode: Int = conn.responseCode
             if (responseCode == 201 || responseCode == 200) {
                 val successResponse = Result.Success(readResponse(conn))
-                coroutineScope.launch(Dispatchers.Main) {
+                coroutineScope?.launch(Dispatchers.Main) {
                     resultCallback(successResponse)
                 }
             } else {
                 //  Parse the error as a Result.Failure object and send it in the callback.
-                coroutineScope.launch(Dispatchers.Main) {
+                coroutineScope?.launch(Dispatchers.Main) {
                     val errorResponse = Result.Failure(conn.responseMessage ?: UNKNOWN_ERROR)
                     resultCallback(errorResponse)
                 }
-
             }
         }
+        //  Cancel the Coroutine Scope once the API call is completed.
+        cancelCoroutineScope()
     }
 
     //  This method takes the username and password as params and encode them into
@@ -140,6 +151,11 @@ object NetworkRequestHandler {
                 Base64.NO_WRAP
             )
         return "BASIC $encodedCredentials"
+    }
+    //  This cancels any running coroutine scopes. WHen a scope cancels any background work
+    //  that was executing will be cancelled.
+    fun cancelCoroutineScope(){
+        coroutineScope?.cancel()
     }
 
     //  Reads the response from the connection object input stream
