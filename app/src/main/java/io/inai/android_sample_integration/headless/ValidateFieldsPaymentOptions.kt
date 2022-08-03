@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.helpers.NetworkRequestHandler
 import io.inai.android_sample_integration.helpers.Orders
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
 import io.inai.android_sample_integration.helpers.showAlert
@@ -35,6 +36,7 @@ class ValidateFieldsPaymentOptions : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentOptionsHelper.errorCallback = { error ->
+            (activity as HeadlessActivity).hideProgress()
             showAlert(error)
         }
         prepareUi()
@@ -91,5 +93,11 @@ class ValidateFieldsPaymentOptions : Fragment() {
             R.id.action_validateFieldsPaymentOptionsFragment_to_validatePaymentFieldsFragment,
             bundle
         )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as HeadlessActivity).hideProgress()
+        NetworkRequestHandler.cancelCoroutineScope()
     }
 }

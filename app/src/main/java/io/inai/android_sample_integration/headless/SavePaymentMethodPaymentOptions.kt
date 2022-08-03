@@ -35,6 +35,7 @@ class SavePaymentMethodPaymentOptions : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentOptionsHelper.errorCallback = { error ->
+            (activity as HeadlessActivity).hideProgress()
             showAlert(error)
         }
         prepareUi()
@@ -68,7 +69,7 @@ class SavePaymentMethodPaymentOptions : Fragment() {
         Orders.prepareOrder(ordersCallback)
     }
 
-    private fun fetchPaymentOptions(){
+    private fun fetchPaymentOptions() {
         val queryParamMap = mapOf(
             PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
             PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode

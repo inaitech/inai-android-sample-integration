@@ -37,7 +37,7 @@ class PaymentOptionsAdapter() :
     fun addList(list: List<PaymentMethodOption>) {
         paymentOptions.clear()
         paymentOptions.addAll(list)
-        notifyItemRangeInserted(0, list.size)
+        notifyItemRangeRemoved(0, list.size)
     }
 
     inner class PaymentOptionsViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {

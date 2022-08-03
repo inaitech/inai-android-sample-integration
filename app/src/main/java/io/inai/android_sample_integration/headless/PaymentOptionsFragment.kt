@@ -50,6 +50,7 @@ class PaymentOptionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentOptionsHelper.errorCallback = { error ->
+            (activity as HeadlessActivity).hideProgress()
             showAlert(error)
         }
         prepareUi()
