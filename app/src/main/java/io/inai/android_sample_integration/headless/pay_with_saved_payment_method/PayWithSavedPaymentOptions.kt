@@ -1,18 +1,18 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.pay_with_saved_payment_method
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.Config
-import io.inai.android_sample_integration.GooglePayActivity
+import io.inai.android_sample_integration.google_pay.GooglePayActivity
 import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.headless.HeadlessActivity
+import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.Orders
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
 import io.inai.android_sample_integration.helpers.showAlert
@@ -23,7 +23,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.Serializable
 
-class PayWithSavedPaymentOptions : Fragment() {
+class PayWithSavedPaymentOptions : Fragment(R.layout.fragment_pay_with_saved_payment_options) {
 
     private var savedPaymentMethodId = ""
     private var savedPaymentMethodType = ""
@@ -31,9 +31,6 @@ class PayWithSavedPaymentOptions : Fragment() {
     private val paymentOptionsHelper = PaymentOptionsHelper()
     private val bundle = Bundle()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_pay_with_saved_payment_options, container, false)
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentOptionsHelper.errorCallback = { error ->
@@ -86,7 +83,7 @@ class PayWithSavedPaymentOptions : Fragment() {
 
     private fun prepareOrder() {
         (activity as HeadlessActivity).showProgress()
-        Orders.prepareOrder { fetchSavedPaymentMethods() }
+        Orders.prepareOrder(requireContext().applicationContext) { fetchSavedPaymentMethods() }
     }
 
     private fun fetchSavedPaymentMethods() {

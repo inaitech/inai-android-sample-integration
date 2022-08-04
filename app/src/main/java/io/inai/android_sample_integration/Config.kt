@@ -9,4 +9,5 @@ object Config {
     var countryCode = "<<country-code>>"
     var currency = "<<currency>>"
     var customerId = "<<customer-id>>"
+    var amount = "<<amount>>"
 }

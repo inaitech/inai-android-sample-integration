@@ -1,13 +1,14 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.pay_with_saved_payment_method
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Spinner
 import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.headless.HeadlessActivity
+import io.inai.android_sample_integration.headless.make_payment.PaymentFieldsFragment
+import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
 import io.inai.android_sample_integration.model.PaymentMethodOption
 import kotlinx.android.synthetic.main.fragment_pay_with_saved_payment_method.*
@@ -15,7 +16,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class PayWithSavedPaymentMethod : Fragment() {
+class PayWithSavedPaymentMethod : Fragment(R.layout.fragment_pay_with_saved_payment_method) {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
@@ -23,14 +24,6 @@ class PayWithSavedPaymentMethod : Fragment() {
     private lateinit var makePaymentHelper: MakePaymentHelper
     private lateinit var paymentMethodId: String
     private val paymentDetails = JSONObject()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pay_with_saved_payment_method, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

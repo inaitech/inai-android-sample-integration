@@ -1,10 +1,8 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.make_payment
 
 import android.os.Bundle
 import io.inai.android_sample_integration.R
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
@@ -18,7 +16,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
+class PaymentFieldsFragment : Fragment(R.layout.fragment_payment_fields), InaiCheckoutDelegate {
 
     companion object {
         const val FIELD_TYPE_CHECKBOX = "checkbox"
@@ -29,13 +27,6 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
     private val paymentDetails = JSONObject()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_payment_fields, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

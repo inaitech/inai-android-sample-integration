@@ -1,35 +1,27 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.save_payment_method
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Spinner
 import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.headless.HeadlessActivity
+import io.inai.android_sample_integration.headless.make_payment.PaymentFieldsFragment
+import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
 import io.inai.android_sample_integration.model.PaymentMethodOption
-import kotlinx.android.synthetic.main.fragment_validate_payment_fields.*
+import kotlinx.android.synthetic.main.fragment_save_payment_method.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-class ValidatePaymentFields : Fragment() {
+class SavePaymentMethod : Fragment() {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
-    private lateinit var validateHelper: ValidateFieldsHelper
+    private lateinit var makePaymentHelper: MakePaymentHelper
     private val paymentDetails = JSONObject()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_validate_payment_fields, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,22 +29,25 @@ class ValidatePaymentFields : Fragment() {
             arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
-        validateHelper = ValidateFieldsHelper(requireContext())
+        makePaymentHelper = MakePaymentHelper(requireContext())
         createFormFields()
 
-        btn_validate_fields.setOnClickListener {
-            generatePaymentDetails()
-            validateFields()
+        btn_save_payment_method.setOnClickListener {
+            if (validateFormInput()) {
+                generatePaymentDetails()
+                makePayment()
+            }
         }
     }
 
     private fun createFormFields() {
         paymentMethodOption.formFields.forEachIndexed { _, formField ->
+            //  Since, we do not need Save Card checkbox for Save Payment Method operation,
+            //  we ignore the save card field and do not show the checkbox.
+            if (formField.name == "save_card") return@forEachIndexed
+
             formLayout.addView(formBuilder.createLabel(formField))
             when (formField.fieldType) {
-                PaymentFieldsFragment.FIELD_TYPE_CHECKBOX -> {
-                    formLayout.addView(formBuilder.createCheckBox(formField))
-                }
                 PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
                     formLayout.addView(formBuilder.createPicker(formField))
                 }
@@ -68,6 +63,28 @@ class ValidatePaymentFields : Fragment() {
         }
     }
 
+    private fun validateFormInput(): Boolean {
+        var areFormInputsValid = true
+        var areRequiredInputsFilled = true
+
+        paymentMethodOption.formFields.forEach {
+            if (it.fieldType != PaymentFieldsFragment.FIELD_TYPE_CHECKBOX && it.fieldType != PaymentFieldsFragment.FIELD_TYPE_SELECT) {
+                val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
+                when {
+                    formFieldEditText.isInvalidInput() -> {
+                        areFormInputsValid = false
+                        return@forEach
+                    }
+                    formFieldEditText.isFieldEmpty() -> {
+                        areRequiredInputsFilled = false
+                        return@forEach
+                    }
+                }
+            }
+        }
+        return areFormInputsValid && areRequiredInputsFilled
+    }
+
     private fun generatePaymentDetails() {
         val fieldsArray = JSONArray()
         var paymentField: JSONObject
@@ -75,13 +92,6 @@ class ValidatePaymentFields : Fragment() {
         paymentMethodOption.formFields.forEach {
 
             paymentField = when (it.fieldType) {
-                PaymentFieldsFragment.FIELD_TYPE_CHECKBOX -> {
-                    val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
-                    getPaymentField(
-                        it.name,
-                        checkbox?.isChecked ?: false
-                    )
-                }
                 PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
                     val picker = formLayout.findViewWithTag<Spinner>(it.name)
                     val selection = it.data?.values?.single { item ->
@@ -104,6 +114,13 @@ class ValidatePaymentFields : Fragment() {
             fieldsArray.put(paymentField)
         }
 
+        //  Since we are saving a payment method, the value will always
+        //  be true for field type save_card. So we do not check for the
+        //  field type explicitly. Instead we dirctly add it to the JSON Array.
+        fieldsArray.put(
+            getPaymentField("save_card", true)
+        )
+
         paymentDetails.put("fields", fieldsArray)
     }
 
@@ -115,15 +132,24 @@ class ValidatePaymentFields : Fragment() {
         return jsonObject
     }
 
-    private fun validateFields() {
-        val validateFieldsCallback = { resultMsg: String ->
-            requireContext().showAlert(resultMsg)
+    private fun makePayment() {
+        val makePaymentResultCallback = { resultMsg: String ->
+            showAlert(resultMsg)
         }
 
-        validateHelper.validateFields(
-            paymentMethodOption.railCode, paymentDetails, validateFieldsCallback
+        makePaymentHelper.makeHeadlessPayment(
+            paymentMethodOption.railCode, paymentDetails, makePaymentResultCallback
         )
+    }
 
+    /**
+     *  Fragment cycle callback.
+     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
+     */
+    override fun onStop() {
+        super.onStop()
+        NetworkRequestHandler.cancelCoroutineScope()
+        (activity as HeadlessActivity).hideProgress()
     }
 
 }

@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.pay_with_saved_payment_method
 
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +19,7 @@ class SavedPaymentsMethodAdapter() :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): SavedPaymentsMethodAdapter.PaymentMethodsViewholder {
+    ): PaymentMethodsViewholder {
         return PaymentMethodsViewholder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_payment_options, parent, false)
@@ -27,7 +27,7 @@ class SavedPaymentsMethodAdapter() :
     }
 
     override fun onBindViewHolder(
-        holder: SavedPaymentsMethodAdapter.PaymentMethodsViewholder,
+        holder: PaymentMethodsViewholder,
         position: Int
     ) {
         holder.setData(paymentMethods[position])

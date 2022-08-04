@@ -1,7 +1,9 @@
 package io.inai.android_sample_integration.helpers
 
+import android.content.Context
 import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.Config
+import io.inai.android_sample_integration.Config.amount
 import io.inai.android_sample_integration.Config.customerId
 import io.inai.android_sample_integration.Config.inaiPassword
 import io.inai.android_sample_integration.Config.inaiToken
@@ -34,7 +36,7 @@ object Orders {
     /***
      *  Order Creation
      */
-    fun prepareOrder(callback: () -> Unit) {
+    fun prepareOrder(applicationContext: Context, callback: () -> Unit) {
         val orderPostData = getDataForOrders()
         val jsonString = Json.encodeToString(orderPostData)
 
@@ -49,7 +51,7 @@ object Orders {
                     callback()
                 }
                 is NetworkRequestHandler.Result.Failure -> {
-
+                    applicationContext.showAlert(result.message)
                 }
             }
         }
@@ -63,7 +65,7 @@ object Orders {
 
     private fun getDataForOrders(): OrderPostData {
         return OrderPostData(
-            amount = "100",
+            amount = amount,
             currency = Config.currency,
             customer = OrderCustomer(
                 email = "testdev@inai.io",

@@ -1,36 +1,26 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.get_card_info
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.headless.HeadlessActivity
 import io.inai.android_sample_integration.helpers.Orders
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_get_card_info.*
-import kotlinx.android.synthetic.main.fragment_get_card_info.view.*
 import org.json.JSONObject
 
-class GetCardInfoFragment : Fragment(), InaiCardInfoDelegate {
+class GetCardInfoFragment : Fragment(R.layout.fragment_get_card_info), InaiCardInfoDelegate {
 
     private lateinit var editText: EditText
     private lateinit var textView: TextView
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_get_card_info, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +38,7 @@ class GetCardInfoFragment : Fragment(), InaiCardInfoDelegate {
     }
 
     private fun prepareOrder() {
-        Orders.prepareOrder {
+        Orders.prepareOrder(requireContext().applicationContext) {
             getCardInfo(editText.text.toString())
         }
     }

@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/paymentOptionsFragment"
-        android:name="io.inai.android_sample_integration.headless.PaymentOptionsFragment"
+        android:name="io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment"
         android:label="fragment_payment_options"
         tools:layout="@layout/fragment_payment_options">
 
@@ -51,12 +51,12 @@
     </fragment>
     <fragment
         android:id="@+id/paymentFieldsFragment"
-        android:name="io.inai.android_sample_integration.headless.PaymentFieldsFragment"
+        android:name="io.inai.android_sample_integration.headless.make_payment.PaymentFieldsFragment"
         android:label="fragment_payment_fields"
         tools:layout="@layout/fragment_payment_fields" />
     <fragment
         android:id="@+id/validateFieldsPaymentOptionsFragment"
-        android:name="io.inai.android_sample_integration.headless.ValidateFieldsPaymentOptions"
+        android:name="io.inai.android_sample_integration.headless.validate_fields.ValidateFieldsPaymentOptions"
         android:label="fragment_validate_fields_payment_options"
         tools:layout="@layout/fragment_validate_fields_payment_options" >
         <action
@@ -65,12 +65,12 @@
     </fragment>
     <fragment
         android:id="@+id/validatePaymentFieldsFragment"
-        android:name="io.inai.android_sample_integration.headless.ValidatePaymentFields"
+        android:name="io.inai.android_sample_integration.headless.validate_fields.ValidatePaymentFields"
         android:label="fragment_validate_payment_fields"
         tools:layout="@layout/fragment_validate_payment_fields" />
     <fragment
         android:id="@+id/savePaymentMethodPaymentOptions"
-        android:name="io.inai.android_sample_integration.headless.SavePaymentMethodPaymentOptions"
+        android:name="io.inai.android_sample_integration.headless.save_payment_method.SavePaymentMethodPaymentOptions"
         android:label="fragment_save_payment_method_payment_options"
         tools:layout="@layout/fragment_save_payment_method_payment_options" >
         <action
@@ -80,12 +80,12 @@
     </fragment>
     <fragment
         android:id="@+id/savePaymentMethod"
-        android:name="io.inai.android_sample_integration.headless.SavePaymentMethod"
+        android:name="io.inai.android_sample_integration.headless.save_payment_method.SavePaymentMethod"
         android:label="fragment_save_payment_method"
         tools:layout="@layout/fragment_save_payment_method" />
     <fragment
         android:id="@+id/payWithSavedPaymentOptions"
-        android:name="io.inai.android_sample_integration.headless.PayWithSavedPaymentOptions"
+        android:name="io.inai.android_sample_integration.headless.pay_with_saved_payment_method.PayWithSavedPaymentOptions"
         android:label="fragment_pay_with_saved_payment_options"
         tools:layout="@layout/fragment_pay_with_saved_payment_options" >
         <action
@@ -95,12 +95,12 @@
     </fragment>
     <fragment
         android:id="@+id/payWithSavedPaymentMethod"
-        android:name="io.inai.android_sample_integration.headless.PayWithSavedPaymentMethod"
+        android:name="io.inai.android_sample_integration.headless.pay_with_saved_payment_method.PayWithSavedPaymentMethod"
         android:label="fragment_pay_with_saved_payment_method"
         tools:layout="@layout/fragment_pay_with_saved_payment_method" />
     <fragment
         android:id="@+id/getCardInfoFragment"
-        android:name="io.inai.android_sample_integration.headless.GetCardInfoFragment"
+        android:name="io.inai.android_sample_integration.headless.get_card_info.GetCardInfoFragment"
         android:label="fragment_get_card_info"
         tools:layout="@layout/fragment_get_card_info" />
 </navigation>

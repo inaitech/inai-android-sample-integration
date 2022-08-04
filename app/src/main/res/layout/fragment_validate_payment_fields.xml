@@ -4,7 +4,7 @@
     android:id="@+id/rl_validate_payments"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".headless.ValidatePaymentFields">
+    tools:context=".headless.validate_fields.ValidatePaymentFields">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

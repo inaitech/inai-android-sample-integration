@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.make_payment
 
 import android.view.LayoutInflater
 import android.view.View

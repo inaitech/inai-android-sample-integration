@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration
+package io.inai.android_sample_integration.google_pay
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +13,7 @@ import com.google.android.gms.wallet.PaymentData
 import com.google.android.gms.wallet.WalletConstants
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
+import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.InaiCheckout

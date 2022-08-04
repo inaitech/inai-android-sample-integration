@@ -1,35 +1,43 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.make_payment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.inai.android_sample_integration.Config
-import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.*
+import io.inai.android_sample_integration.Config.countryCode
+import io.inai.android_sample_integration.google_pay.GooglePayActivity
+import io.inai.android_sample_integration.headless.HeadlessActivity
+import io.inai.android_sample_integration.helpers.NetworkRequestHandler
 import io.inai.android_sample_integration.helpers.Orders
+import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sample_integration.model.PaymentMethodOption
-import kotlinx.android.synthetic.main.fragment_save_payment_method_payment_options.*
+import kotlinx.android.synthetic.main.fragment_payment_options.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.Serializable
 
-class SavePaymentMethodPaymentOptions : Fragment() {
+
+class PaymentOptionsFragment : Fragment(R.layout.fragment_payment_options) {
 
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
     private val paymentOptionsHelper = PaymentOptionsHelper()
     private val bundle = Bundle()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_save_payment_method_payment_options, container, false)
+    companion object {
+        const val ARG_PAYMENT_OPTION = "arg_payment_option"
+        const val ARG_PAYMENT_METHOD_ID = "arg-payment_method_id"
+        const val PARAM_ORDER_ID = "order_id"
+        const val PARAM_COUNTRY_CODE = "country"
+        const val PARAM_SAVED_PAYMENT_METHOD = "saved_payment_method"
+        const val APPLE_PAY = "apple_pay"
+        const val GOOGLE_PAY = "google_pay"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,11 +52,7 @@ class SavePaymentMethodPaymentOptions : Fragment() {
 
     private fun prepareUi() {
         paymentOptionsAdapter.clickListener = { paymentMethodOption ->
-            //  Navigate to validate screen to proceed with the selected payment option
-            bundle.apply {
-                putSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION, paymentMethodOption as Serializable)
-            }
-            goToPaymentScreen()
+            checkIfPaymentOptionIsGPay(paymentMethodOption)
         }
 
         rv_payment_options.apply {
@@ -65,21 +69,19 @@ class SavePaymentMethodPaymentOptions : Fragment() {
 
     private fun prepareOrder() {
         (activity as HeadlessActivity).showProgress()
-        val ordersCallback = { fetchPaymentOptions() }
-        Orders.prepareOrder(ordersCallback)
+        Orders.prepareOrder(requireContext()) { fetchPaymentOptions() }
     }
 
     private fun fetchPaymentOptions() {
         val queryParamMap = mapOf(
-            PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
-            PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode
+            PARAM_ORDER_ID to orderId,
+            PARAM_COUNTRY_CODE to countryCode
         )
-
         val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
             (activity as HeadlessActivity).hideProgress()
             // We do not need apple_pay to be shown on android app since apple pay will not work on android.
             val filteredList = paymentOptionsList.filter {
-                it.railCode != PaymentOptionsFragment.APPLE_PAY
+                it.railCode != APPLE_PAY
             }
             paymentOptionsAdapter.addList(filteredList)
         }
@@ -89,12 +91,35 @@ class SavePaymentMethodPaymentOptions : Fragment() {
         paymentOptionsHelper.fetchPaymentOptions(queryParamMap, paymentOptionsCallback)
     }
 
+    private fun checkIfPaymentOptionIsGPay(paymentMethodOption: PaymentMethodOption) {
+        if (paymentMethodOption.railCode == GOOGLE_PAY) {
+            val intent = Intent(requireActivity(), GooglePayActivity::class.java)
+            val jsonString = Json.encodeToString(paymentMethodOption)
+            intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS, jsonString)
+            startActivity(intent)
+        } else {
+            //  Navigate to payments screen to proceed with the selected payment option
+            bundle.apply {
+                putSerializable(ARG_PAYMENT_OPTION, paymentMethodOption as Serializable)
+            }
+            goToPaymentScreen()
+        }
+    }
+
     private fun goToPaymentScreen() {
         findNavController().navigate(
-            R.id.action_savePaymentMethodPaymentOptions_to_savePaymentMethod,
+            R.id.action_paymentOptionsFragment_to_paymentFieldsFragment,
             bundle
         )
     }
 
-
+    /**
+     *  Fragment cycle callback.
+     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
+     */
+    override fun onStop() {
+        super.onStop()
+        NetworkRequestHandler.cancelCoroutineScope()
+        (activity as HeadlessActivity).hideProgress()
+    }
 }

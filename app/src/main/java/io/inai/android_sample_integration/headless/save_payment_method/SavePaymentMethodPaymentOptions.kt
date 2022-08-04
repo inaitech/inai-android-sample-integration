@@ -1,37 +1,29 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.save_payment_method
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.helpers.NetworkRequestHandler
+import io.inai.android_sample_integration.headless.HeadlessActivity
+import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsAdapter
+import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.Orders
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sample_integration.model.PaymentMethodOption
-import kotlinx.android.synthetic.main.fragment_payment_options.*
+import kotlinx.android.synthetic.main.fragment_save_payment_method_payment_options.*
 import java.io.Serializable
 
-class ValidateFieldsPaymentOptions : Fragment() {
+class SavePaymentMethodPaymentOptions : Fragment(R.layout.fragment_save_payment_method_payment_options) {
 
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
     private val paymentOptionsHelper = PaymentOptionsHelper()
     private val bundle = Bundle()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_validate_fields_payment_options, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,7 +58,7 @@ class ValidateFieldsPaymentOptions : Fragment() {
 
     private fun prepareOrder() {
         (activity as HeadlessActivity).showProgress()
-        Orders.prepareOrder { fetchPaymentOptions() }
+        Orders.prepareOrder(requireContext().applicationContext) { fetchPaymentOptions() }
     }
 
     private fun fetchPaymentOptions() {
@@ -74,6 +66,7 @@ class ValidateFieldsPaymentOptions : Fragment() {
             PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
             PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode
         )
+
         val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
             (activity as HeadlessActivity).hideProgress()
             // We do not need apple_pay to be shown on android app since apple pay will not work on android.
@@ -90,14 +83,10 @@ class ValidateFieldsPaymentOptions : Fragment() {
 
     private fun goToPaymentScreen() {
         findNavController().navigate(
-            R.id.action_validateFieldsPaymentOptionsFragment_to_validatePaymentFieldsFragment,
+            R.id.action_savePaymentMethodPaymentOptions_to_savePaymentMethod,
             bundle
         )
     }
 
-    override fun onStop() {
-        super.onStop()
-        (activity as HeadlessActivity).hideProgress()
-        NetworkRequestHandler.cancelCoroutineScope()
-    }
+
 }
