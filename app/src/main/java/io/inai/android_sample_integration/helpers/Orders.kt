@@ -18,7 +18,7 @@ import kotlinx.serialization.json.JsonPrimitive
 
 object Orders {
 
-    private const val inaiBackendOrdersUrl: String = BuildConfig.InaiBaseUrl + "orders"
+    private const val inaiBackendOrdersUrl: String = BuildConfig.InaiBaseUrl + "/orders"
     val authenticationString
         get() = NetworkRequestHandler.getEncodedAuthString(inaiToken, inaiPassword)
     //  A map that can be added to a JSON object as metadata for Order creation.

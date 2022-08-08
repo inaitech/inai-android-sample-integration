@@ -12,8 +12,8 @@ import kotlinx.serialization.decodeFromString
  */
 class PaymentOptionsHelper {
 
-    private val inaiBackendPaymentOptionsUrl: String = BuildConfig.InaiBaseUrl + "payment-method-options"
-    private val inaiBackendSavedPaymentMethod: String = BuildConfig.InaiBaseUrl + "customers/"
+    private val inaiBackendPaymentOptionsUrl: String = BuildConfig.InaiBaseUrl + "/payment-method-options"
+    private val inaiBackendSavedPaymentMethod: String = BuildConfig.InaiBaseUrl + "/customers/"
 
     /**
      *  This lambda function is invoked whwnever we get an error state.
