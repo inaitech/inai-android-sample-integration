@@ -39,6 +39,10 @@ class HeadlessFragment : Fragment(R.layout.fragment_headless) {
             )
         }
 
+        btn_google_pay.setOnClickListener {
+            findNavController().navigate(R.id.action_headlessFragment_to_googlePayPaymentOptions)
+        }
+
         btn_validate_fields.setOnClickListener {
             findNavController().navigate(R.id.action_headlessFragment_to_validateFieldsPaymentOptionsFragment)
         }

@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_headlessFragment_to_getCardInfoFragment"
             app:destination="@id/getCardInfoFragment" />
+        <action
+            android:id="@+id/action_headlessFragment_to_googlePayPaymentOptions"
+            app:destination="@id/googlePayPaymentOptions" />
     </fragment>
 
     <fragment
@@ -103,4 +106,9 @@
         android:name="io.inai.android_sample_integration.headless.get_card_info.GetCardInfoFragment"
         android:label="fragment_get_card_info"
         tools:layout="@layout/fragment_get_card_info" />
+    <fragment
+        android:id="@+id/googlePayPaymentOptions"
+        android:name="io.inai.android_sample_integration.google_pay.GooglePayPaymentOptions"
+        android:label="fragment_google_pay_payment_options"
+        tools:layout="@layout/fragment_google_pay_payment_options" />
 </navigation>
