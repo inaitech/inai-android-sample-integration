@@ -2,6 +2,7 @@ package io.inai.android_sample_integration.headless.pay_with_saved_payment_metho
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -110,7 +111,7 @@ class PayWithSavedPaymentOptions : Fragment(R.layout.fragment_pay_with_saved_pay
         } else {
             //  Navigate to payments screen to proceed with the selected payment option
             bundle.apply {
-                putSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION, paymentMethodOption as Serializable)
+                putParcelable(PaymentOptionsFragment.ARG_PAYMENT_OPTION, paymentMethodOption as Parcelable)
                 //  In case of saved payment methods we need to pass payment method id.
                 if (savedPaymentMethodId.isNotEmpty()) putString(
                     PaymentOptionsFragment.ARG_PAYMENT_METHOD_ID,

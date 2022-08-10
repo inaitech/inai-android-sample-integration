@@ -26,7 +26,7 @@ class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
-            arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         validateHelper = ValidateFieldsHelper(requireContext())

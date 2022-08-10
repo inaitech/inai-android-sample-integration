@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_save_payment_method.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-class SavePaymentMethod : Fragment() {
+class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
@@ -26,7 +26,7 @@ class SavePaymentMethod : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
-            arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         makePaymentHelper = MakePaymentHelper(requireContext())

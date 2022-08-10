@@ -1,6 +1,7 @@
 package io.inai.android_sample_integration.headless.save_payment_method
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -39,7 +40,7 @@ class SavePaymentMethodPaymentOptions : Fragment(R.layout.fragment_save_payment_
         paymentOptionsAdapter.clickListener = { paymentMethodOption ->
             //  Navigate to validate screen to proceed with the selected payment option
             bundle.apply {
-                putSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION, paymentMethodOption as Serializable)
+                putParcelable(PaymentOptionsFragment.ARG_PAYMENT_OPTION, paymentMethodOption as Parcelable)
             }
             goToPaymentScreen()
         }

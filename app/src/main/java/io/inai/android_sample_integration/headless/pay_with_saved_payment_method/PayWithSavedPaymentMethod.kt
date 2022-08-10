@@ -28,7 +28,7 @@ class PayWithSavedPaymentMethod : Fragment(R.layout.fragment_pay_with_saved_paym
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
-            arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         paymentMethodId =
             arguments?.getString(PaymentOptionsFragment.ARG_PAYMENT_METHOD_ID, "") ?: ""
         formLayout = view.findViewById(R.id.form_layout)

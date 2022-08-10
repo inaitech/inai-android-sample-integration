@@ -35,7 +35,7 @@ class HeadlessFragment : Fragment(R.layout.fragment_headless) {
         btn_saved_payment_method.setOnClickListener {
             findNavController().navigate(
                 R.id.action_headlessFragment_to_checkoutFragment,
-                Bundle().apply { putSerializable(ARG_HEADLESS_OPERATION, HeadlessOperation.MakePayment) }
+                Bundle().apply { putSerializable(ARG_HEADLESS_OPERATION, HeadlessOperation.PayWithSavedPaymentMethod) }
             )
         }
 
