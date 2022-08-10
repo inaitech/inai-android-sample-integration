@@ -1,14 +1,19 @@
 package io.inai.android_sample_integration.headless.make_payment
 
 import android.os.Bundle
-import io.inai.android_sample_integration.R
 import android.view.View
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
-import io.inai.android_sample_integration.helpers.*
+import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
+import io.inai.android_sample_integration.helpers.FormBuilder
+import io.inai.android_sample_integration.helpers.FormFieldEditText
 import io.inai.android_sample_integration.helpers.Orders.orderId
+import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sample_integration.model.PaymentMethodOption
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_payment_fields.*
@@ -31,7 +36,7 @@ class PaymentFieldsFragment : Fragment(R.layout.fragment_payment_fields), InaiCh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
-            arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         createFormFields()
