@@ -7,9 +7,9 @@ import io.inai.android_sample_integration.Config.amount
 import io.inai.android_sample_integration.Config.customerId
 import io.inai.android_sample_integration.Config.inaiPassword
 import io.inai.android_sample_integration.Config.inaiToken
-import io.inai.android_sample_integration.model.OrderCustomer
-import io.inai.android_sample_integration.model.OrderPostData
-import io.inai.android_sample_integration.model.OrderResult
+import io.inai.android_sample_integration.headless.make_payment.OrderCustomer
+import io.inai.android_sample_integration.headless.make_payment.OrderPostData
+import io.inai.android_sample_integration.headless.make_payment.OrderResult
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

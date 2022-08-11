@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.model
+package io.inai.android_sample_integration.headless.make_payment
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -6,7 +6,6 @@ import kotlinx.android.parcel.RawValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
-import org.json.JSONObject
 
 
 /**

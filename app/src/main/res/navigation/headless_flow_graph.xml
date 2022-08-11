@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/checkoutFragment"
-        android:name="io.inai.android_sample_integration.headless.CheckoutFragment"
+        android:name="io.inai.android_sample_integration.headless.ProductCheckoutFragment"
         android:label="fragment_checkout"
         tools:layout="@layout/fragment_checkout">
         <action
@@ -42,9 +42,9 @@
 
     <fragment
         android:id="@+id/paymentOptionsFragment"
-        android:name="io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment"
+        android:name="io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment"
         android:label="fragment_payment_options"
-        tools:layout="@layout/fragment_payment_options">
+        tools:layout="@layout/fragment_make_payment_payment_options">
 
         <action
             android:id="@+id/action_paymentOptionsFragment_to_paymentFieldsFragment"
@@ -54,9 +54,9 @@
     </fragment>
     <fragment
         android:id="@+id/paymentFieldsFragment"
-        android:name="io.inai.android_sample_integration.headless.make_payment.PaymentFieldsFragment"
+        android:name="io.inai.android_sample_integration.headless.make_payment.MakePaymentFragment"
         android:label="fragment_payment_fields"
-        tools:layout="@layout/fragment_payment_fields" />
+        tools:layout="@layout/fragment_make_payment" />
     <fragment
         android:id="@+id/validateFieldsPaymentOptionsFragment"
         android:name="io.inai.android_sample_integration.headless.validate_fields.ValidateFieldsPaymentOptions"

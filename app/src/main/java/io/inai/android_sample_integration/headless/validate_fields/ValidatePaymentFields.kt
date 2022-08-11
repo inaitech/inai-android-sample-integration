@@ -7,10 +7,10 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Spinner
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.headless.make_payment.PaymentFieldsFragment
-import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
+import io.inai.android_sample_integration.headless.make_payment.MakePaymentFragment
+import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
-import io.inai.android_sample_integration.model.PaymentMethodOption
+import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
 import kotlinx.android.synthetic.main.fragment_validate_payment_fields.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -26,7 +26,7 @@ class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
-            arguments?.getParcelable<PaymentMethodOption>(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         validateHelper = ValidateFieldsHelper(requireContext())
@@ -41,10 +41,10 @@ class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields
         paymentMethodOption.formFields.forEachIndexed { _, formField ->
             formLayout.addView(formBuilder.createLabel(formField))
             when (formField.fieldType) {
-                PaymentFieldsFragment.FIELD_TYPE_CHECKBOX -> {
+                MakePaymentFragment.FIELD_TYPE_CHECKBOX -> {
                     formLayout.addView(formBuilder.createCheckBox(formField))
                 }
-                PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
+                MakePaymentFragment.FIELD_TYPE_SELECT -> {
                     formLayout.addView(formBuilder.createPicker(formField))
                 }
                 else -> {
@@ -66,14 +66,14 @@ class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields
         paymentMethodOption.formFields.forEach {
 
             paymentField = when (it.fieldType) {
-                PaymentFieldsFragment.FIELD_TYPE_CHECKBOX -> {
+                MakePaymentFragment.FIELD_TYPE_CHECKBOX -> {
                     val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
                     getPaymentField(
                         it.name,
                         checkbox?.isChecked ?: false
                     )
                 }
-                PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
+                MakePaymentFragment.FIELD_TYPE_SELECT -> {
                     val picker = formLayout.findViewWithTag<Spinner>(it.name)
                     val selection = it.data?.values?.single { item ->
                         item.label == picker.selectedItem

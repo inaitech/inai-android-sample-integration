@@ -2,9 +2,9 @@ package io.inai.android_sample_integration.helpers
 
 import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.model.PaymentMethod
-import io.inai.android_sample_integration.model.PaymentMethodOption
+import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
 import io.inai.android_sample_integration.model.PaymentMethodsResult
-import io.inai.android_sample_integration.model.PaymentOptionsResult
+import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsResult
 import kotlinx.serialization.decodeFromString
 
 /**

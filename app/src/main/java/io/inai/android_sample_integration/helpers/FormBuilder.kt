@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.model.FormField
+import io.inai.android_sample_integration.headless.make_payment.FormField
 
 class FormBuilder(private val context: Context, ) {
 

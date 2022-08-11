@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
+import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
 import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsAdapter
-import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
+import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.NetworkRequestHandler
 import io.inai.android_sample_integration.helpers.Orders
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
 import io.inai.android_sample_integration.helpers.showAlert
-import io.inai.android_sample_integration.model.PaymentMethodOption
 import kotlinx.android.synthetic.main.fragment_google_pay_payment_options.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -64,14 +64,14 @@ class GooglePayPaymentOptions : Fragment(R.layout.fragment_google_pay_payment_op
 
     private fun fetchPaymentOptions() {
         val queryParamMap = mapOf(
-            PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
-            PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode
+            MakePayment_PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
+            MakePayment_PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode
         )
         val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
             (activity as HeadlessActivity).hideProgress()
             // We only need to show google pay option here.
             val filteredList = paymentOptionsList.filter {
-                it.railCode == PaymentOptionsFragment.GOOGLE_PAY
+                it.railCode == MakePayment_PaymentOptionsFragment.GOOGLE_PAY
             }
             paymentOptionsAdapter.addList(filteredList)
         }

@@ -7,10 +7,10 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
-import io.inai.android_sample_integration.headless.make_payment.PaymentFieldsFragment
-import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
+import io.inai.android_sample_integration.headless.make_payment.MakePaymentFragment
+import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
-import io.inai.android_sample_integration.model.PaymentMethodOption
+import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
 import kotlinx.android.synthetic.main.fragment_save_payment_method.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -26,7 +26,7 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
-            arguments?.getParcelable<PaymentMethodOption>(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         makePaymentHelper = MakePaymentHelper(requireContext())
@@ -48,7 +48,7 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
 
             formLayout.addView(formBuilder.createLabel(formField))
             when (formField.fieldType) {
-                PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
+                MakePaymentFragment.FIELD_TYPE_SELECT -> {
                     formLayout.addView(formBuilder.createPicker(formField))
                 }
                 else -> {
@@ -68,7 +68,7 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
         var areRequiredInputsFilled = true
 
         paymentMethodOption.formFields.forEach {
-            if (it.fieldType != PaymentFieldsFragment.FIELD_TYPE_CHECKBOX && it.fieldType != PaymentFieldsFragment.FIELD_TYPE_SELECT) {
+            if (it.fieldType != MakePaymentFragment.FIELD_TYPE_CHECKBOX && it.fieldType != MakePaymentFragment.FIELD_TYPE_SELECT) {
                 val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                 when {
                     formFieldEditText.isInvalidInput() -> {
@@ -92,7 +92,7 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
         paymentMethodOption.formFields.forEach {
 
             paymentField = when (it.fieldType) {
-                PaymentFieldsFragment.FIELD_TYPE_SELECT -> {
+                MakePaymentFragment.FIELD_TYPE_SELECT -> {
                     val picker = formLayout.findViewWithTag<Spinner>(it.name)
                     val selection = it.data?.values?.single { item ->
                         item.label == picker.selectedItem

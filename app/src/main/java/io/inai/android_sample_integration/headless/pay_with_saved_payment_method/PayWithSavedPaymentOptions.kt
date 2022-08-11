@@ -13,16 +13,15 @@ import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.google_pay.GooglePayActivity
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
-import io.inai.android_sample_integration.headless.make_payment.PaymentOptionsFragment
+import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.Orders
 import io.inai.android_sample_integration.helpers.PaymentOptionsHelper
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sample_integration.model.PaymentMethod
-import io.inai.android_sample_integration.model.PaymentMethodOption
+import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
 import kotlinx.android.synthetic.main.fragment_pay_with_saved_payment_options.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.io.Serializable
 
 class PayWithSavedPaymentOptions : Fragment(R.layout.fragment_pay_with_saved_payment_options) {
 
@@ -53,9 +52,9 @@ class PayWithSavedPaymentOptions : Fragment(R.layout.fragment_pay_with_saved_pay
             //  Fetch payment method options for the selected saved payment method
             //  by adding saved_payment_method=true param to query map.
             val queryParamMap = mapOf(
-                PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
-                PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode,
-                PaymentOptionsFragment.PARAM_SAVED_PAYMENT_METHOD to "true"
+                MakePayment_PaymentOptionsFragment.PARAM_ORDER_ID to Orders.orderId,
+                MakePayment_PaymentOptionsFragment.PARAM_COUNTRY_CODE to Config.countryCode,
+                MakePayment_PaymentOptionsFragment.PARAM_SAVED_PAYMENT_METHOD to "true"
             )
             //  Callback that specifies what to do after fetching payment options.
             val paymentOptionsCallback = { paymentOptionsList: List<PaymentMethodOption> ->
@@ -94,7 +93,7 @@ class PayWithSavedPaymentOptions : Fragment(R.layout.fragment_pay_with_saved_pay
         val savedPaymentMethodCallback = { paymentMethodsList: List<PaymentMethod> ->
             (activity as HeadlessActivity).hideProgress()
             val filteredList = paymentMethodsList.filter {
-                it.type != PaymentOptionsFragment.APPLE_PAY
+                it.type != MakePayment_PaymentOptionsFragment.APPLE_PAY
             }
             savedPaymentMethodsAdapter.addList(filteredList)
         }
@@ -103,7 +102,7 @@ class PayWithSavedPaymentOptions : Fragment(R.layout.fragment_pay_with_saved_pay
     }
 
     private fun checkIfPaymentOptionIsGPay(paymentMethodOption: PaymentMethodOption) {
-        if (paymentMethodOption.railCode == PaymentOptionsFragment.GOOGLE_PAY) {
+        if (paymentMethodOption.railCode == MakePayment_PaymentOptionsFragment.GOOGLE_PAY) {
             val intent = Intent(requireActivity(), GooglePayActivity::class.java)
             val jsonString = Json.encodeToString(paymentMethodOption)
             intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS, jsonString)
@@ -111,10 +110,10 @@ class PayWithSavedPaymentOptions : Fragment(R.layout.fragment_pay_with_saved_pay
         } else {
             //  Navigate to payments screen to proceed with the selected payment option
             bundle.apply {
-                putParcelable(PaymentOptionsFragment.ARG_PAYMENT_OPTION, paymentMethodOption as Parcelable)
+                putParcelable(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_OPTION, paymentMethodOption as Parcelable)
                 //  In case of saved payment methods we need to pass payment method id.
                 if (savedPaymentMethodId.isNotEmpty()) putString(
-                    PaymentOptionsFragment.ARG_PAYMENT_METHOD_ID,
+                    MakePayment_PaymentOptionsFragment.ARG_PAYMENT_METHOD_ID,
                     savedPaymentMethodId
                 )
             }

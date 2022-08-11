@@ -12,16 +12,14 @@ import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
 import io.inai.android_sample_integration.helpers.FormBuilder
 import io.inai.android_sample_integration.helpers.FormFieldEditText
-import io.inai.android_sample_integration.helpers.Orders.orderId
 import io.inai.android_sample_integration.helpers.showAlert
-import io.inai.android_sample_integration.model.PaymentMethodOption
 import io.inai.android_sdk.*
-import kotlinx.android.synthetic.main.fragment_payment_fields.*
+import kotlinx.android.synthetic.main.fragment_make_payment.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 
-class PaymentFieldsFragment : Fragment(R.layout.fragment_payment_fields), InaiCheckoutDelegate {
+class MakePaymentFragment : Fragment(R.layout.fragment_make_payment), InaiCheckoutDelegate {
 
     companion object {
         const val FIELD_TYPE_CHECKBOX = "checkbox"
@@ -31,12 +29,14 @@ class PaymentFieldsFragment : Fragment(R.layout.fragment_payment_fields), InaiCh
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
+    private lateinit var orderId: String
     private val paymentDetails = JSONObject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        orderId = arguments?.getString(MakePayment_PaymentOptionsFragment.ARG_ORDER_ID) ?: ""
         paymentMethodOption =
-            arguments?.getParcelable<PaymentMethodOption>(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         createFormFields()
@@ -142,7 +142,7 @@ class PaymentFieldsFragment : Fragment(R.layout.fragment_payment_fields), InaiCh
 
     //  Call SDK method makePayment() to initiate a headless checkout.
     private fun makeHeadlessPayment() {
-        if (inaiToken.isNotEmpty()) {
+        if (inaiToken.isNotEmpty() && orderId.isNotEmpty()) {
             val config = InaiConfig(
                 token = inaiToken,
                 orderId = orderId,

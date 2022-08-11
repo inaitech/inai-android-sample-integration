@@ -4,7 +4,7 @@
     android:id="@+id/rl_payments"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".headless.make_payment.PaymentFieldsFragment">
+    tools:context=".headless.make_payment.MakePaymentFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

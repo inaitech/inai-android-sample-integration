@@ -7,7 +7,7 @@ import androidx.navigation.fragment.findNavController
 import io.inai.android_sample_integration.R
 import kotlinx.android.synthetic.main.fragment_checkout.*
 
-class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
+class ProductCheckoutFragment : Fragment(R.layout.fragment_checkout) {
 
     private lateinit var headlessOperation: HeadlessOperation
 
