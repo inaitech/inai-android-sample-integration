@@ -109,7 +109,7 @@ class PaymentOptionsHelper {
      *  @param customerId should be passed by the parent.
      */
     private fun getSavedPaymentMethodsUrl(customerId: String): String {
-        return "$inaiBackendSavedPaymentMethod${Orders.customerId}/payment-methods"
+        return "$inaiBackendSavedPaymentMethod${customerId}/payment-methods"
     }
 
 }
