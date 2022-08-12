@@ -1,6 +1,5 @@
-package io.inai.android_sample_integration.headless.make_payment
+package io.inai.android_sample_integration.headless.validate_fields
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
@@ -9,22 +8,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.inai.android_sample_integration.*
-import io.inai.android_sample_integration.Config.amount
-import io.inai.android_sample_integration.Config.countryCode
-import io.inai.android_sample_integration.Config.currency
-import io.inai.android_sample_integration.google_pay.GooglePayActivity
+import io.inai.android_sample_integration.BuildConfig
+import io.inai.android_sample_integration.Config
+import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
 import io.inai.android_sample_integration.helpers.*
-import kotlinx.android.synthetic.main.fragment_make_payment_payment_options.*
+import kotlinx.android.synthetic.main.fragment_validate_fields_payment_options.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
-
-class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payment_payment_options) {
+class ValidateFields_PaymentOptionsFragment : Fragment(R.layout.fragment_validate_fields_payment_options) {
 
     private val inaiBackendOrdersUrl: String = BuildConfig.InaiBaseUrl + "/orders"
     private val inaiBackendPaymentOptionsUrl: String = BuildConfig.InaiBaseUrl + "/payment-method-options"
@@ -37,28 +33,33 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         "taxable_amount" to JsonPrimitive("50")
     )
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
+    private val paymentOptionsHelper = PaymentOptionsHelper()
     private val bundle = Bundle()
 
     companion object {
         const val ARG_ORDER_ID = "order_id"
         const val ARG_PAYMENT_OPTION = "arg_payment_option"
-        const val ARG_PAYMENT_METHOD_ID = "arg-payment_method_id"
-        const val PARAM_ORDER_ID = "order_id"
-        const val PARAM_COUNTRY_CODE = "country"
-        const val PARAM_SAVED_PAYMENT_METHOD = "saved_payment_method"
         const val APPLE_PAY = "apple_pay"
-        const val GOOGLE_PAY = "google_pay"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        paymentOptionsHelper.errorCallback = { error ->
+            (activity as HeadlessActivity).hideProgress()
+            showAlert(error)
+        }
         prepareUi()
         prepareOrder()
     }
 
     private fun prepareUi() {
         paymentOptionsAdapter.clickListener = { paymentMethodOption ->
-            checkIfPaymentOptionIsGPay(paymentMethodOption)
+            //  Navigate to validate screen to proceed with the selected payment option
+            bundle.apply {
+                putParcelable(ARG_PAYMENT_OPTION, paymentMethodOption as Parcelable)
+                putString(ARG_ORDER_ID, orderId)
+            }
+            goToPaymentScreen()
         }
 
         rv_payment_options.apply {
@@ -85,6 +86,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         makeNetworkRequest(networkConfig, ::onOrderPrepared)
     }
 
+
     private fun onOrderPrepared(orderResponse: String) {
         val orderResult = json.decodeFromString<OrderResult>(orderResponse)
         Config.customerId = orderResult.customer_id
@@ -94,7 +96,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
     }
 
     private fun fetchPaymentOptions() {
-        val url = "$inaiBackendPaymentOptionsUrl?order_id=$orderId&country=$countryCode"
+        val url = "$inaiBackendPaymentOptionsUrl?order_id=$orderId&country=${Config.countryCode}"
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to url,
             NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
@@ -140,8 +142,8 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
 
     private fun getDataForOrders(): OrderPostData {
         return OrderPostData(
-            amount = amount,
-            currency = currency,
+            amount = Config.amount,
+            currency = Config.currency,
             customer = OrderCustomer(
                 email = "testdev@inai.io",
                 first_name = "Dev",
@@ -153,22 +155,6 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         )
     }
 
-    private fun checkIfPaymentOptionIsGPay(paymentMethodOption: PaymentMethodOption) {
-        if (paymentMethodOption.railCode == GOOGLE_PAY) {
-            val intent = Intent(requireActivity(), GooglePayActivity::class.java)
-            val jsonString = Json.encodeToString(paymentMethodOption)
-            intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS, jsonString)
-            startActivity(intent)
-        } else {
-            //  Navigate to payments screen to proceed with the selected payment option
-            bundle.apply {
-                putString(ARG_ORDER_ID, orderId)
-                putParcelable(ARG_PAYMENT_OPTION, paymentMethodOption as Parcelable)
-            }
-            goToPaymentScreen()
-        }
-    }
-
     private fun onError(error: String) {
         (activity as HeadlessActivity).hideProgress()
         this.showAlert(error)
@@ -176,18 +162,14 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
 
     private fun goToPaymentScreen() {
         findNavController().navigate(
-            R.id.action_paymentOptionsFragment_to_paymentFieldsFragment,
+            R.id.action_validateFieldsPaymentOptionsFragment_to_validatePaymentFieldsFragment,
             bundle
         )
     }
 
-    /**
-     *  Fragment cycle callback.
-     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
-     */
     override fun onStop() {
         super.onStop()
-        NetworkRequestHandler.cancelCoroutineScope()
         (activity as HeadlessActivity).hideProgress()
+        NetworkRequestHandler.cancelCoroutineScope()
     }
 }

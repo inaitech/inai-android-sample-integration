@@ -6,27 +6,31 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Spinner
+import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.headless.make_payment.MakePaymentFragment
-import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
+import io.inai.android_sample_integration.headless.save_payment_method.SavePaymentMethod_PaymentOptionsFragment
+import io.inai.android_sample_integration.headless.validate_fields.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
+import io.inai.android_sample_integration.headless.validate_fields.FormBuilder.Companion.FIELD_TYPE_SELECT
 import io.inai.android_sample_integration.helpers.*
-import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
+import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_validate_payment_fields.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields) {
+class ValidatePaymentFieldsFragment : Fragment(R.layout.fragment_validate_payment_fields), InaiValidateFieldsDelegate {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
+    private lateinit var orderId: String
     private lateinit var validateHelper: ValidateFieldsHelper
     private val paymentDetails = JSONObject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
-            arguments?.getParcelable<PaymentMethodOption>(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(ValidateFields_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+        orderId = arguments?.getString(SavePaymentMethod_PaymentOptionsFragment.ARG_ORDER_ID) ?: ""
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
         validateHelper = ValidateFieldsHelper(requireContext())
@@ -41,10 +45,10 @@ class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields
         paymentMethodOption.formFields.forEachIndexed { _, formField ->
             formLayout.addView(formBuilder.createLabel(formField))
             when (formField.fieldType) {
-                MakePaymentFragment.FIELD_TYPE_CHECKBOX -> {
+                FormBuilder.FIELD_TYPE_CHECKBOX -> {
                     formLayout.addView(formBuilder.createCheckBox(formField))
                 }
-                MakePaymentFragment.FIELD_TYPE_SELECT -> {
+                FIELD_TYPE_SELECT -> {
                     formLayout.addView(formBuilder.createPicker(formField))
                 }
                 else -> {
@@ -66,14 +70,14 @@ class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields
         paymentMethodOption.formFields.forEach {
 
             paymentField = when (it.fieldType) {
-                MakePaymentFragment.FIELD_TYPE_CHECKBOX -> {
+                FIELD_TYPE_CHECKBOX -> {
                     val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
                     getPaymentField(
                         it.name,
                         checkbox?.isChecked ?: false
                     )
                 }
-                MakePaymentFragment.FIELD_TYPE_SELECT -> {
+                FIELD_TYPE_SELECT -> {
                     val picker = formLayout.findViewWithTag<Spinner>(it.name)
                     val selection = it.data?.values?.single { item ->
                         item.label == picker.selectedItem
@@ -107,14 +111,35 @@ class ValidatePaymentFields : Fragment(R.layout.fragment_validate_payment_fields
     }
 
     private fun validateFields() {
-        val validateFieldsCallback = { resultMsg: String ->
-            requireContext().showAlert(resultMsg)
-        }
-
-        validateHelper.validateFields(
-            paymentMethodOption.railCode, paymentDetails, validateFieldsCallback
+        //  Init Inai SDK
+        val config = InaiConfig(
+            token = Config.inaiToken,
+            orderId = Orders.orderId,
+            countryCode = Config.countryCode
         )
-
+        try {
+            val inaiCheckout = InaiCheckout(config)
+            inaiCheckout.validateFields(
+                paymentMethodOption.railCode,
+                paymentDetails,
+                context = requireContext(),
+                delegate = this
+            )
+        } catch (ex: Exception) {
+            //  Handle initialisation error
+            requireContext().showAlert("Error while initialising sdk : $ex.message")
+        }
     }
 
+    override fun fieldsValidationFinished(result: InaiValidateFieldsResult) {
+        when (result.status) {
+            InaiValidateFieldsStatus.Success -> {
+                //  Invoke callback with success message
+                requireContext().showAlert("Validate Fields Success Result : ${result.data}")
+            }
+            InaiValidateFieldsStatus.Failed -> {
+                requireContext().showAlert("Validate Fields Fail Result : ${result.data}")
+            }
+        }
+    }
 }

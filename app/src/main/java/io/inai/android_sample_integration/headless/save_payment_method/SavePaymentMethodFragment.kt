@@ -5,31 +5,32 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Spinner
+import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
-import io.inai.android_sample_integration.headless.make_payment.MakePaymentFragment
-import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
-import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
+import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
+import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_SELECT
+import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_save_payment_method.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
+class SavePaymentMethodFragment : Fragment(R.layout.fragment_save_payment_method), InaiCheckoutDelegate {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
-    private lateinit var makePaymentHelper: MakePaymentHelper
+    private lateinit var orderId: String
     private val paymentDetails = JSONObject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        orderId = arguments?.getString(SavePaymentMethod_PaymentOptionsFragment.ARG_ORDER_ID) ?: ""
         paymentMethodOption =
-            arguments?.getParcelable<PaymentMethodOption>(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(SavePaymentMethod_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
-        makePaymentHelper = MakePaymentHelper(requireContext())
         createFormFields()
 
         btn_save_payment_method.setOnClickListener {
@@ -48,7 +49,7 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
 
             formLayout.addView(formBuilder.createLabel(formField))
             when (formField.fieldType) {
-                MakePaymentFragment.FIELD_TYPE_SELECT -> {
+                FIELD_TYPE_SELECT -> {
                     formLayout.addView(formBuilder.createPicker(formField))
                 }
                 else -> {
@@ -68,7 +69,7 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
         var areRequiredInputsFilled = true
 
         paymentMethodOption.formFields.forEach {
-            if (it.fieldType != MakePaymentFragment.FIELD_TYPE_CHECKBOX && it.fieldType != MakePaymentFragment.FIELD_TYPE_SELECT) {
+            if (it.fieldType != FIELD_TYPE_CHECKBOX && it.fieldType != FIELD_TYPE_SELECT) {
                 val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                 when {
                     formFieldEditText.isInvalidInput() -> {
@@ -92,7 +93,7 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
         paymentMethodOption.formFields.forEach {
 
             paymentField = when (it.fieldType) {
-                MakePaymentFragment.FIELD_TYPE_SELECT -> {
+                FIELD_TYPE_SELECT -> {
                     val picker = formLayout.findViewWithTag<Spinner>(it.name)
                     val selection = it.data?.values?.single { item ->
                         item.label == picker.selectedItem
@@ -133,13 +134,44 @@ class SavePaymentMethod : Fragment(R.layout.fragment_save_payment_method) {
     }
 
     private fun makePayment() {
-        val makePaymentResultCallback = { resultMsg: String ->
-            showAlert(resultMsg)
+        if (Config.inaiToken.isNotEmpty() && orderId.isNotEmpty()) {
+            val config = InaiConfig(
+                token = Config.inaiToken,
+                orderId = orderId,
+                countryCode = Config.countryCode,
+                redirectUrl = ""
+            )
+            try {
+                val inaiCheckout = InaiCheckout(config)
+                inaiCheckout.makePayment(
+                    paymentMethodOption.railCode,
+                    paymentDetails,
+                    context = requireContext(),
+                    delegate = this
+                )
+            } catch (ex: Exception) {
+                //  Handle initialisation error
+                showAlert("Error while initialising sdk : $ex.message")
+            }
         }
+    }
 
-        makePaymentHelper.makeHeadlessPayment(
-            paymentMethodOption.railCode, paymentDetails, makePaymentResultCallback
-        )
+    override fun paymentFinished(result: InaiPaymentResult) {
+        when (result.status) {
+            InaiPaymentStatus.Success -> {
+                showAlert("Payment Success! ${result.data}")
+            }
+            InaiPaymentStatus.Failed -> {
+                showAlert("Payment Failed! ${result.data}")
+            }
+            InaiPaymentStatus.Canceled -> {
+                var message = "Payment Canceled!"
+                if (result.data.has("message")) {
+                    message = result.data.getString("message")
+                }
+                showAlert(message)
+            }
+        }
     }
 
     /**

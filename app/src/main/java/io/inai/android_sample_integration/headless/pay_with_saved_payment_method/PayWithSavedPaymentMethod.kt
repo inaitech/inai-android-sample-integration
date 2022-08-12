@@ -11,6 +11,8 @@ import io.inai.android_sample_integration.headless.make_payment.MakePaymentFragm
 import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
 import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
+import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
+import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_SELECT
 import kotlinx.android.synthetic.main.fragment_pay_with_saved_payment_method.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -50,11 +52,11 @@ class PayWithSavedPaymentMethod : Fragment(R.layout.fragment_pay_with_saved_paym
             //  since all other information will already be captured.
             //  So we show only text input fields.
             formLayout.addView(formBuilder.createLabel(formField))
-            if (formField.fieldType != MakePaymentFragment.FIELD_TYPE_SELECT &&
-                formField.fieldType != MakePaymentFragment.FIELD_TYPE_CHECKBOX
+            if (formField.fieldType != FIELD_TYPE_SELECT &&
+                formField.fieldType != FIELD_TYPE_CHECKBOX
             )
                 when (formField.fieldType) {
-                    MakePaymentFragment.FIELD_TYPE_SELECT -> {
+                    FIELD_TYPE_SELECT -> {
                         formLayout.addView(formBuilder.createPicker(formField))
                     }
                     else -> {
@@ -74,7 +76,7 @@ class PayWithSavedPaymentMethod : Fragment(R.layout.fragment_pay_with_saved_paym
         var areRequiredInputsFilled = true
 
         paymentMethodOption.formFields.forEach {
-            if (it.fieldType != MakePaymentFragment.FIELD_TYPE_CHECKBOX && it.fieldType != MakePaymentFragment.FIELD_TYPE_SELECT) {
+            if (it.fieldType != FIELD_TYPE_CHECKBOX && it.fieldType != FIELD_TYPE_SELECT) {
                 val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
                 when {
                     formFieldEditText.isInvalidInput() -> {
@@ -98,7 +100,7 @@ class PayWithSavedPaymentMethod : Fragment(R.layout.fragment_pay_with_saved_paym
         paymentMethodOption.formFields.forEach {
 
             paymentField = when (it.fieldType) {
-                MakePaymentFragment.FIELD_TYPE_SELECT -> {
+                FIELD_TYPE_SELECT -> {
                     val picker = formLayout.findViewWithTag<Spinner>(it.name)
                     val selection = it.data?.values?.single { item ->
                         item.label == picker.selectedItem

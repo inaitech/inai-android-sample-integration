@@ -11,6 +11,8 @@ import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
 import io.inai.android_sample_integration.helpers.FormBuilder
+import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
+import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_SELECT
 import io.inai.android_sample_integration.helpers.FormFieldEditText
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.*
@@ -20,11 +22,6 @@ import org.json.JSONObject
 
 
 class MakePaymentFragment : Fragment(R.layout.fragment_make_payment), InaiCheckoutDelegate {
-
-    companion object {
-        const val FIELD_TYPE_CHECKBOX = "checkbox"
-        const val FIELD_TYPE_SELECT = "select"
-    }
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
