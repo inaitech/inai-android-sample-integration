@@ -1,7 +1,6 @@
 package io.inai.android_sample_integration.headless
 
 import android.os.Bundle
-import io.inai.android_sample_integration.R
 import android.text.*
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -12,26 +11,31 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
-import io.inai.android_sample_integration.Orders.orderId
+import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.helpers.CardInfoHelper
+import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
+import io.inai.android_sample_integration.helpers.Orders.orderId
+import io.inai.android_sample_integration.helpers.ValidateFieldsHelper
+import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sample_integration.model.FormField
 import io.inai.android_sample_integration.model.PaymentMethodOption
-import io.inai.android_sample_integration.showAlert
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_payment_fields.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 
-class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
+class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate {
 
     companion object {
         const val FIELD_TYPE_CHECKBOX = "checkbox"
+        const val FIELD_TYPE_SELECT = "select"
     }
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
+    private lateinit var validateFieldsHelper: ValidateFieldsHelper
     private val paymentDetails = JSONObject()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,12 +49,14 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
         paymentMethodOption =
             arguments?.getSerializable(PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         formLayout = view.findViewById(R.id.form_layout)
-
+        validateFieldsHelper = ValidateFieldsHelper(requireContext())
         createFormFields()
 
         btn_proceed.setOnClickListener {
             generatePaymentDetails()
-            makeHeadlessPayment()
+            validateFieldsHelper.validateFields(paymentMethodOption.railCode, paymentDetails) {
+                makeHeadlessPayment()
+            }
         }
     }
 
@@ -58,6 +64,7 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
         paymentMethodOption.formFields.forEachIndexed { _, formField ->
             when (formField.fieldType) {
                 FIELD_TYPE_CHECKBOX -> createCheckBox(formField)
+                FIELD_TYPE_SELECT -> createSpinner(formField)
                 else -> createTextField(formField)
             }
         }
@@ -76,6 +83,13 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
         inputTextField.inputType = InputType.TYPE_CLASS_TEXT
         inputTextField.hint = formField.placeholder
         inputTextField.tag = formField.name
+
+        // Add card related textWatchers if fields are for card details
+        if (formField.name == "number") {
+            inputTextField.addTextChangedListener(CardInfoHelper(inputTextField, requireContext()))
+        } else if (formField.name == "expiry") {
+            inputTextField.addTextChangedListener(ExpiryDateFormatter(inputTextField))
+        }
 
         val layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -97,24 +111,61 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
         formLayout.addView(checkBox)
     }
 
+    private fun createSpinner(formField: FormField) {
+        val label = TextView(requireContext())
+        label.text = formField.label + if (formField.required) "*" else ""
+        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+        label.setTextColor(ResourcesCompat.getColor(resources, R.color.black, null))
+        label.tag = "label"
+
+        val spinner = Spinner(requireContext())
+        val countryList: List<String> = formField.data!!.values!!.map {
+            it.label
+        }
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        val adapter: ArrayAdapter<String> = ArrayAdapter(
+            requireContext(), android.R.layout.simple_spinner_dropdown_item,
+            countryList.toMutableList()
+        )
+        spinner.tag = formField.name
+        spinner.adapter = adapter
+        spinner.prompt = formField.label
+
+        formLayout.addView(label)
+        formLayout.addView(spinner)
+    }
+
     private fun generatePaymentDetails() {
         val fieldsArray = JSONArray()
         var paymentField: JSONObject
         // Get payment field JSON object based on field type.
         paymentMethodOption.formFields.forEach {
 
-            paymentField = if (it.fieldType == FIELD_TYPE_CHECKBOX) {
-                val inputTextFieldCheckbox = formLayout.findViewWithTag<CheckBox>(it.name)
-                getPaymentField(
-                    it.name,
-                    inputTextFieldCheckbox?.isChecked ?: false
-                )
-            } else {
-                val inputTextFieldTextBox = formLayout.findViewWithTag<EditText>(it.name)
-                getPaymentField(
-                    it.name,
-                    inputTextFieldTextBox?.text.toString()
-                )
+            paymentField = when (it.fieldType) {
+                FIELD_TYPE_CHECKBOX -> {
+                    val inputTextFieldCheckbox = formLayout.findViewWithTag<CheckBox>(it.name)
+                    getPaymentField(
+                        it.name,
+                        inputTextFieldCheckbox?.isChecked ?: false
+                    )
+                }
+                FIELD_TYPE_SELECT -> {
+                    val spinner = formLayout.findViewWithTag<Spinner>(it.name)
+                    val selection = it.data?.values?.single { item ->
+                        item.label == spinner.selectedItem
+                    }
+                    getPaymentField(
+                        it.name,
+                        selection?.value ?: ""
+                    )
+                }
+                else -> {
+                    val inputTextFieldTextBox = formLayout.findViewWithTag<EditText>(it.name)
+                    getPaymentField(
+                        it.name,
+                        inputTextFieldTextBox?.text.toString()
+                    )
+                }
             }
 
             fieldsArray.put(paymentField)
@@ -161,14 +212,14 @@ class PaymentFieldsFragment : Fragment(), InaiCheckoutDelegate{
                 showAlert("Payment Success! ${result.data}")
             }
             InaiPaymentStatus.Failed -> {
-                showAlert("Payment Success! ${result.data}")
+                showAlert("Payment Failed! ${result.data}")
             }
             InaiPaymentStatus.Canceled -> {
                 var message = "Payment Canceled!"
                 if (result.data.has("message")) {
                     message = result.data.getString("message")
                 }
-                showAlert("Payment Success! ${result.data}")
+                showAlert(message)
             }
         }
     }

@@ -22,7 +22,7 @@ class CheckoutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         btn_buy.setOnClickListener {
             findNavController().navigate(
-                R.id.action_checkoutFragment_to_paymentOptionsFragment,arguments
+                R.id.action_checkoutFragment_to_paymentOptionsFragment, arguments
             )
         }
     }

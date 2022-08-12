@@ -1,6 +1,8 @@
-package io.inai.android_sample_integration
+package io.inai.android_sample_integration.helpers
 
-import android.widget.Toast
+import io.inai.android_sample_integration.BuildConfig
+import io.inai.android_sample_integration.Config
+import io.inai.android_sample_integration.Config.customerId
 import io.inai.android_sample_integration.Config.inaiPassword
 import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.model.OrderCustomer
@@ -18,8 +20,6 @@ object Orders {
     val authenticationString
         get() = NetworkRequestHandler.getEncodedAuthString(inaiToken, inaiPassword)
     var orderId: String = ""
-        private set
-    var customerId = ""
         private set
 
     /***
@@ -65,7 +65,10 @@ object Orders {
             ),
             metadata = JsonObject(
                 mapOf(
-                    "test_order_id" to JsonPrimitive("test_order")
+                    "test_order_id" to JsonPrimitive("test_order"),
+                    "vat" to JsonPrimitive("6"),
+                    "tax_percentage" to JsonPrimitive("12"),
+                    "taxable_amount" to JsonPrimitive("50")
                 )
             )
         )

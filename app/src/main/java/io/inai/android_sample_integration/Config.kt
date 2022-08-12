@@ -1,11 +1,12 @@
 package io.inai.android_sample_integration
 
-//  A singleton which contains for variables for credentials.
+//  A singleton which contains variables for credentials.
 //  Replace the values with your credentials.
 object Config {
 
-    var inaiToken = "sbx_ci_7tgV5Ci6zh5bdZUMTwhjCpM4ahLWMz2zTQDXkqbLv1E7"
-    var inaiPassword = "sbx_cs_ECoxWXgWwNmDyG2vFx1HaW5MjRk9UFkyovoxUh9DcDLU"
-    var countryCode = "EGY"
-    var currency = "EGP"
+    var inaiToken = "<<inai-token>>"
+    var inaiPassword = "<<inai-password>>"
+    var countryCode = "<<country-code>>"
+    var currency = "<<currency>>"
+    var customerId = "<<customer-id>>"
 }

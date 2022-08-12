@@ -7,7 +7,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.getSanitizedText
+import io.inai.android_sample_integration.helpers.getSanitizedText
 import io.inai.android_sample_integration.model.PaymentMethodOption
 
 class PaymentOptionsAdapter() :
