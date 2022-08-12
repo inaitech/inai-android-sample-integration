@@ -8,4 +8,5 @@ object Config {
     var inaiPassword = "<<inai-password>>"
     var countryCode = "<<country-code>>"
     var currency = "<<currency>>"
+    var customerId = "<<customer-id>>"
 }
