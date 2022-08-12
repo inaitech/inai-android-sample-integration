@@ -34,14 +34,4 @@
         android:backgroundTint="@color/black"
         android:text="Checkout" />
 
-    <Button
-        android:id="@+id/btn_google_pay"
-        android:layout_width="220dp"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="googlePayButtonAction"
-        android:text="Pay with Google Pay"
-        android:visibility="gone" />
-
 </RelativeLayout>
