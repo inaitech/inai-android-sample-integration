@@ -18,7 +18,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class PayWithSavedPaymentMethod : Fragment(R.layout.fragment_pay_with_saved_payment_method) {
+class PayWithSavedPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_saved_payment_method) {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout

@@ -8,9 +8,9 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.headless.save_payment_method.SavePaymentMethod_PaymentOptionsFragment
 import io.inai.android_sample_integration.headless.validate_fields.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
 import io.inai.android_sample_integration.headless.validate_fields.FormBuilder.Companion.FIELD_TYPE_SELECT
+import io.inai.android_sample_integration.headless.validate_fields.ValidateFields_PaymentOptionsFragment.Companion.ARG_ORDER_ID
 import io.inai.android_sample_integration.helpers.*
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_validate_payment_fields.*
@@ -23,17 +23,15 @@ class ValidatePaymentFieldsFragment : Fragment(R.layout.fragment_validate_paymen
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
     private lateinit var orderId: String
-    private lateinit var validateHelper: ValidateFieldsHelper
     private val paymentDetails = JSONObject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         paymentMethodOption =
             arguments?.getParcelable<PaymentMethodOption>(ValidateFields_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
-        orderId = arguments?.getString(SavePaymentMethod_PaymentOptionsFragment.ARG_ORDER_ID) ?: ""
+        orderId = arguments?.getString(ARG_ORDER_ID) ?: ""
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
-        validateHelper = ValidateFieldsHelper(requireContext())
         createFormFields()
         btn_validate_fields.setOnClickListener {
             generatePaymentDetails()
@@ -45,7 +43,7 @@ class ValidatePaymentFieldsFragment : Fragment(R.layout.fragment_validate_paymen
         paymentMethodOption.formFields.forEachIndexed { _, formField ->
             formLayout.addView(formBuilder.createLabel(formField))
             when (formField.fieldType) {
-                FormBuilder.FIELD_TYPE_CHECKBOX -> {
+                FIELD_TYPE_CHECKBOX -> {
                     formLayout.addView(formBuilder.createCheckBox(formField))
                 }
                 FIELD_TYPE_SELECT -> {
@@ -114,7 +112,7 @@ class ValidatePaymentFieldsFragment : Fragment(R.layout.fragment_validate_paymen
         //  Init Inai SDK
         val config = InaiConfig(
             token = Config.inaiToken,
-            orderId = Orders.orderId,
+            orderId = orderId,
             countryCode = Config.countryCode
         )
         try {

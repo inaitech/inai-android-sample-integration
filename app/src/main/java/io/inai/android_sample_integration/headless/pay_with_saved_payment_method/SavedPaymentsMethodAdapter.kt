@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.getSanitizedText
-import io.inai.android_sample_integration.model.PaymentMethod
 
 class SavedPaymentsMethodAdapter() :
     RecyclerView.Adapter<SavedPaymentsMethodAdapter.PaymentMethodsViewholder>() {

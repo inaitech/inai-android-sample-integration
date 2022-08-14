@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.model
+package io.inai.android_sample_integration.headless.pay_with_saved_payment_method
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

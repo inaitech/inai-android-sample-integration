@@ -88,7 +88,7 @@
         tools:layout="@layout/fragment_save_payment_method" />
     <fragment
         android:id="@+id/payWithSavedPaymentOptions"
-        android:name="io.inai.android_sample_integration.headless.pay_with_saved_payment_method.PayWithSavedPaymentOptions"
+        android:name="io.inai.android_sample_integration.headless.pay_with_saved_payment_method.PayWithSavedPaymentOptionsFragment"
         android:label="fragment_pay_with_saved_payment_options"
         tools:layout="@layout/fragment_pay_with_saved_payment_options" >
         <action
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/payWithSavedPaymentMethod"
-        android:name="io.inai.android_sample_integration.headless.pay_with_saved_payment_method.PayWithSavedPaymentMethod"
+        android:name="io.inai.android_sample_integration.headless.pay_with_saved_payment_method.PayWithSavedPaymentMethodFragment"
         android:label="fragment_pay_with_saved_payment_method"
         tools:layout="@layout/fragment_pay_with_saved_payment_method" />
     <fragment
