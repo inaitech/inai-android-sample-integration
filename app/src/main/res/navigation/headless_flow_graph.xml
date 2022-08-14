@@ -108,7 +108,7 @@
         tools:layout="@layout/fragment_get_card_info" />
     <fragment
         android:id="@+id/googlePayPaymentOptions"
-        android:name="io.inai.android_sample_integration.google_pay.GooglePayPaymentOptions"
+        android:name="io.inai.android_sample_integration.google_pay.GooglePayPaymentOptionsFragment"
         android:label="fragment_google_pay_payment_options"
         tools:layout="@layout/fragment_google_pay_payment_options" />
 </navigation>
