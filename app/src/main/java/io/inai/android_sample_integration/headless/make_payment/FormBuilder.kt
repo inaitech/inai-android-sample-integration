@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.helpers
+package io.inai.android_sample_integration.headless.make_payment
 
 import android.content.Context
 import android.text.InputType
@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.headless.make_payment.FormField
 
 class FormBuilder(private val context: Context, ) {
 

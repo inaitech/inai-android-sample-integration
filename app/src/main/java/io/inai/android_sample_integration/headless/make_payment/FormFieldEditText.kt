@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.helpers
+package io.inai.android_sample_integration.headless.make_payment
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -8,7 +8,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.headless.make_payment.FormField
 import java.util.regex.Pattern
 
 class FormFieldEditText(context: Context, formField: FormField) : AppCompatEditText(context) {

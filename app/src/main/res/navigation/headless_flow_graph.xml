@@ -49,7 +49,7 @@
         <action
             android:id="@+id/action_paymentOptionsFragment_to_paymentFieldsFragment"
             app:destination="@id/paymentFieldsFragment"
-            app:popUpTo="@id/checkoutFragment"
+            app:popUpTo="@id/headlessFragment"
             app:popUpToInclusive="false" />
     </fragment>
     <fragment
@@ -94,7 +94,8 @@
         <action
             android:id="@+id/action_payWithSavedPaymentOptions_to_payWithSavedPaymentMethod"
             app:destination="@id/payWithSavedPaymentMethod"
-            app:popUpTo="@id/checkoutFragment" />
+            app:popUpTo="@id/headlessFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/payWithSavedPaymentMethod"

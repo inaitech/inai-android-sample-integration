@@ -9,8 +9,8 @@ import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
 import io.inai.android_sample_integration.helpers.*
-import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
-import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_SELECT
+import io.inai.android_sample_integration.headless.make_payment.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
+import io.inai.android_sample_integration.headless.make_payment.FormBuilder.Companion.FIELD_TYPE_SELECT
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_save_payment_method.*
 import org.json.JSONArray

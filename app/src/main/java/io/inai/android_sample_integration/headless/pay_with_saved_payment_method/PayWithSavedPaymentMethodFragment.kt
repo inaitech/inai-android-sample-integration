@@ -5,37 +5,37 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Spinner
+import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
-import io.inai.android_sample_integration.headless.make_payment.MakePaymentFragment
-import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
+import io.inai.android_sample_integration.headless.pay_with_saved_payment_method.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
+import io.inai.android_sample_integration.headless.pay_with_saved_payment_method.FormBuilder.Companion.FIELD_TYPE_SELECT
+import io.inai.android_sample_integration.headless.pay_with_saved_payment_method.PayWithSavedPaymentOptionsFragment.Companion.ARG_ORDER_ID
 import io.inai.android_sample_integration.helpers.*
-import io.inai.android_sample_integration.headless.make_payment.PaymentMethodOption
-import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
-import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_SELECT
+import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_pay_with_saved_payment_method.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 
-class PayWithSavedPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_saved_payment_method) {
+class PayWithSavedPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_saved_payment_method), InaiCheckoutDelegate {
 
     private lateinit var paymentMethodOption: PaymentMethodOption
     private lateinit var formLayout: LinearLayout
     private lateinit var formBuilder: FormBuilder
-    private lateinit var makePaymentHelper: MakePaymentHelper
     private lateinit var paymentMethodId: String
+    private lateinit var orderId: String
     private val paymentDetails = JSONObject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        orderId = arguments?.getString(ARG_ORDER_ID) ?: ""
         paymentMethodOption =
-            arguments?.getParcelable<PaymentMethodOption>(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
+            arguments?.getParcelable<PaymentMethodOption>(PayWithSavedPaymentOptionsFragment.ARG_PAYMENT_OPTION) as PaymentMethodOption
         paymentMethodId =
-            arguments?.getString(MakePayment_PaymentOptionsFragment.ARG_PAYMENT_METHOD_ID, "") ?: ""
+            arguments?.getString(PayWithSavedPaymentOptionsFragment.ARG_PAYMENT_METHOD_ID, "") ?: ""
         formLayout = view.findViewById(R.id.form_layout)
         formBuilder = FormBuilder(requireContext())
-        makePaymentHelper = MakePaymentHelper(requireContext())
         createFormFields()
 
         btn_proceed.setOnClickListener {
@@ -135,14 +135,46 @@ class PayWithSavedPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_sa
     }
 
     private fun makePayment() {
-        val makePaymentResultCallback = { resultMsg: String ->
-            showAlert(resultMsg)
+        if (Config.inaiToken.isNotEmpty() && orderId.isNotEmpty()) {
+            val config = InaiConfig(
+                token = Config.inaiToken,
+                orderId = orderId,
+                countryCode = Config.countryCode,
+                redirectUrl = ""
+            )
+            try {
+                val inaiCheckout = InaiCheckout(config)
+                inaiCheckout.makePayment(
+                    paymentMethodOption.railCode,
+                    paymentDetails,
+                    context = requireContext(),
+                    delegate = this
+                )
+            } catch (ex: Exception) {
+                //  Handle initialisation error
+                showAlert("Error while initialising sdk : $ex.message")
+            }
         }
-
-        makePaymentHelper.makeHeadlessPayment(
-            paymentMethodOption.railCode, paymentDetails, makePaymentResultCallback
-        )
     }
+
+    override fun paymentFinished(result: InaiPaymentResult) {
+        when (result.status) {
+            InaiPaymentStatus.Success -> {
+                showAlert("Payment Success! ${result.data}")
+            }
+            InaiPaymentStatus.Failed -> {
+                showAlert("Payment Failed! ${result.data}")
+            }
+            InaiPaymentStatus.Canceled -> {
+                var message = "Payment Canceled!"
+                if (result.data.has("message")) {
+                    message = result.data.getString("message")
+                }
+                showAlert(message)
+            }
+        }
+    }
+
 
     /**
      *  Fragment cycle callback.

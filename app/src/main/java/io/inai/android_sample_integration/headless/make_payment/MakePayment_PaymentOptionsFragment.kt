@@ -42,10 +42,6 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
     companion object {
         const val ARG_ORDER_ID = "order_id"
         const val ARG_PAYMENT_OPTION = "arg_payment_option"
-        const val ARG_PAYMENT_METHOD_ID = "arg-payment_method_id"
-        const val PARAM_ORDER_ID = "order_id"
-        const val PARAM_COUNTRY_CODE = "country"
-        const val PARAM_SAVED_PAYMENT_METHOD = "saved_payment_method"
         const val APPLE_PAY = "apple_pay"
         const val GOOGLE_PAY = "google_pay"
     }
@@ -158,6 +154,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
             val intent = Intent(requireActivity(), GooglePayActivity::class.java)
             val jsonString = Json.encodeToString(paymentMethodOption)
             intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS, jsonString)
+            intent.putExtra(ARG_ORDER_ID,orderId)
             startActivity(intent)
         } else {
             //  Navigate to payments screen to proceed with the selected payment option

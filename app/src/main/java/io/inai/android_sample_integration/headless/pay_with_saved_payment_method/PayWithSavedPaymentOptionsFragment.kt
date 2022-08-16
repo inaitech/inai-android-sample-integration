@@ -15,6 +15,7 @@ import io.inai.android_sample_integration.Config.customerId
 import io.inai.android_sample_integration.google_pay.GooglePayActivity
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
+import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
 import kotlinx.android.synthetic.main.fragment_pay_with_saved_payment_options.*
 import kotlinx.serialization.decodeFromString
@@ -126,7 +127,7 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
     }
 
     private fun fetchPaymentOptions() {
-        val url = "$inaiBackendPaymentOptionsUrl?order_id=$orderId&country=${Config.countryCode}"
+        val url = "$inaiBackendPaymentOptionsUrl?order_id=$orderId&country=${Config.countryCode}&saved_payment_method=true"
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to url,
             NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
@@ -190,6 +191,7 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
             val intent = Intent(requireActivity(), GooglePayActivity::class.java)
             val jsonString = Json.encodeToString(paymentMethodOption)
             intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS, jsonString)
+            intent.putExtra(ARG_ORDER_ID,orderId)
             startActivity(intent)
         } else {
             //  Navigate to payments screen to proceed with the selected payment option

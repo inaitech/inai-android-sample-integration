@@ -10,10 +10,8 @@ import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
-import io.inai.android_sample_integration.helpers.FormBuilder
-import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
-import io.inai.android_sample_integration.helpers.FormBuilder.Companion.FIELD_TYPE_SELECT
-import io.inai.android_sample_integration.helpers.FormFieldEditText
+import io.inai.android_sample_integration.headless.make_payment.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
+import io.inai.android_sample_integration.headless.make_payment.FormBuilder.Companion.FIELD_TYPE_SELECT
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_make_payment.*

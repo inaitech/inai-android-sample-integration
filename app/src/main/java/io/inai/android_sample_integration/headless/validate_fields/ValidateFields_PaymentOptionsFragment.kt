@@ -33,7 +33,6 @@ class ValidateFields_PaymentOptionsFragment : Fragment(R.layout.fragment_validat
         "taxable_amount" to JsonPrimitive("50")
     )
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
-    private val paymentOptionsHelper = PaymentOptionsHelper()
     private val bundle = Bundle()
 
     companion object {
@@ -44,10 +43,6 @@ class ValidateFields_PaymentOptionsFragment : Fragment(R.layout.fragment_validat
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        paymentOptionsHelper.errorCallback = { error ->
-            (activity as HeadlessActivity).hideProgress()
-            showAlert(error)
-        }
         prepareUi()
         prepareOrder()
     }
