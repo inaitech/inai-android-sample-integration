@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_payments"
+    android:id="@+id/rl_validate_payments"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".headless.PaymentFieldsFragment">
+    tools:context=".headless.validate_fields.ValidatePaymentFieldsFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/btn_proceed">
+        android:layout_above="@id/btn_validate_fields">
 
         <LinearLayout
             android:id="@+id/form_layout"
@@ -22,7 +22,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <Button
-        android:id="@+id/btn_proceed"
+        android:id="@+id/btn_validate_fields"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
@@ -32,6 +32,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/black"
-        android:text="Checkout" />
+        android:text="Validate Fields" />
 
 </RelativeLayout>
