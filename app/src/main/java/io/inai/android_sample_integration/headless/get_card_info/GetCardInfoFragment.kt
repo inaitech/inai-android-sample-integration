@@ -2,7 +2,6 @@ package io.inai.android_sample_integration.headless.get_card_info
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.EditText
@@ -99,7 +98,6 @@ class GetCardInfoFragment : Fragment(R.layout.fragment_get_card_info), InaiCardI
         (activity as HeadlessActivity).hideProgress()
         when (result.status) {
             InaiCardInfoStatus.Success -> {
-                Log.d("CARD_INFO", result.toString())
                 //  Set boolean to to true.
                 // Fetch logo based on card brand.
                 val cardObject = result.data.get("card") as JSONObject
