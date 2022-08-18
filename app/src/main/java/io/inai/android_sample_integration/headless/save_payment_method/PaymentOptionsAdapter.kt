@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.headless
+package io.inai.android_sample_integration.headless.save_payment_method
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.getSanitizedText
-import io.inai.android_sample_integration.model.PaymentMethodOption
 
 class PaymentOptionsAdapter() :
     RecyclerView.Adapter<PaymentOptionsAdapter.PaymentOptionsViewholder>() {
@@ -37,7 +36,7 @@ class PaymentOptionsAdapter() :
     fun addList(list: List<PaymentMethodOption>) {
         paymentOptions.clear()
         paymentOptions.addAll(list)
-        notifyItemRangeInserted(0, list.size)
+        notifyItemRangeRemoved(0, list.size)
     }
 
     inner class PaymentOptionsViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
