@@ -12,7 +12,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        //  Remove Title bar
+        supportActionBar?.title = "Android Sample Integration"
         headless = findViewById<Button>(R.id.btn_headless)
 
         headless.setOnClickListener {

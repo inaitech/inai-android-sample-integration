@@ -1,5 +1,7 @@
-package io.inai.android_sample_integration.model
+package io.inai.android_sample_integration.headless.pay_with_saved_payment_method
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -8,12 +10,15 @@ import kotlinx.serialization.Serializable
  */
 
 @Serializable
+@Parcelize
 data class PaymentMethodsResult(
     @SerialName("payment_methods")
     val paymentMethods: List<PaymentMethod>?
-)
+) : Parcelable
+
 
 @Serializable
+@Parcelize
 data class PaymentMethod(
     @SerialName("card")
     val card: Card?,
@@ -23,9 +28,10 @@ data class PaymentMethod(
     val id: String?,
     @SerialName("type")
     val type: String?
-)
+) : Parcelable
 
 @Serializable
+@Parcelize
 data class Card(
     @SerialName("brand")
     val brand: String? = null,
@@ -55,4 +61,4 @@ data class Card(
     val status: String? = null,
     @SerialName("three_d_secure")
     val threeDSecure: String? = null
-)
+) : Parcelable
