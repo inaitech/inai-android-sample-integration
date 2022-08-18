@@ -21,12 +21,4 @@ class HeadlessActivity : AppCompatActivity() {
     fun hideProgress() {
         progressBar.visibility = View.INVISIBLE
     }
-
-    fun showProgress() {
-        progressBar.visibility = View.VISIBLE
-    }
-
-    fun hideProgress() {
-        progressBar.visibility = View.INVISIBLE
-    }
 }
