@@ -14,7 +14,7 @@
         android:theme="@style/Theme.Androidsampleintegration"
         tools:targetApi="31">
         <activity
-            android:name=".GooglePayActivity"
+            android:name=".google_pay.GooglePayActivity"
             android:exported="false" />
         <activity
             android:name=".headless.HeadlessActivity"
