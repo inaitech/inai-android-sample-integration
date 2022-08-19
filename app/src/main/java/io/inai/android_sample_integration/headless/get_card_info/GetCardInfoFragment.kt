@@ -95,25 +95,27 @@ class GetCardInfoFragment : Fragment(R.layout.fragment_get_card_info), InaiCardI
     }
 
     override fun cardInfoFetched(result: InaiCardInfoResult) {
-        (activity as HeadlessActivity).hideProgress()
-        when (result.status) {
-            InaiCardInfoStatus.Success -> {
-                //  Set boolean to to true.
-                // Fetch logo based on card brand.
-                val cardObject = result.data.get("card") as JSONObject
-                val brandName = cardObject.get("brand") as String
-                val type = cardObject.get("type") as String
-                val country = cardObject.get("country") as String
-                val organizationName = cardObject.get("issue_org_name") as String
-                val organizationWebsite = cardObject.get("issue_org_website") as String
-                val logo = getCardLogo(brandName)
-                //  Display card details in text view
-                textView.text = "$type\n$country\n$organizationName\n$organizationWebsite"
-                // Display logo in the input field
-                editText.setCompoundDrawablesWithIntrinsicBounds(null, null, logo, null)
-            }
-            InaiCardInfoStatus.Failed -> {
-                requireContext().showAlert("Card Info Fail Result : ${result.data}")
+        (activity as? HeadlessActivity)?.let{
+            it.hideProgress()
+            when (result.status) {
+                InaiCardInfoStatus.Success -> {
+                    //  Set boolean to to true.
+                    // Fetch logo based on card brand.
+                    val cardObject = result.data.get("card") as JSONObject
+                    val brandName = cardObject.get("brand") as String
+                    val type = cardObject.get("type") as String
+                    val country = cardObject.get("country") as String
+                    val organizationName = cardObject.get("issue_org_name") as String
+                    val organizationWebsite = cardObject.get("issue_org_website") as String
+                    val logo = getCardLogo(brandName)
+                    //  Display card details in text view
+                    textView.text = "$type\n$country\n$organizationName\n$organizationWebsite"
+                    // Display logo in the input field
+                    editText.setCompoundDrawablesWithIntrinsicBounds(null, null, logo, null)
+                }
+                InaiCardInfoStatus.Failed -> {
+                    requireContext().showAlert("Card Info Fail Result : ${result.data}")
+                }
             }
         }
     }
@@ -187,5 +189,14 @@ class GetCardInfoFragment : Fragment(R.layout.fragment_get_card_info), InaiCardI
     private fun onError(error: String) {
         (activity as HeadlessActivity).hideProgress()
         this.showAlert(error)
+    }
+
+    /**
+     *  Fragment cycle callback.
+     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
+     */
+    override fun onStop() {
+        super.onStop()
+        (activity as HeadlessActivity).hideProgress()
     }
 }

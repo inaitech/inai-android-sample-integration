@@ -219,4 +219,14 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
             bundle
         )
     }
+
+    /**
+     *  Fragment cycle callback.
+     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
+     */
+    override fun onStop() {
+        super.onStop()
+        NetworkRequestHandler.cancelCoroutineScope()
+        (activity as HeadlessActivity).hideProgress()
+    }
 }
