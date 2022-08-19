@@ -32,6 +32,15 @@ This repository demonstrates how to integrate Inai’s Android Framework into yo
 - Kotlin Android Version  1.6.10
 
 ## Setup
+
+To start the backend NodeJS server:
+1. Navigate to the ./server folder at the root level.
+2. Run command `npm install` to install the dependency packages.
+3. Add a new .env file the following variables:
+    1. client_username
+    2. client_password
+4. Run command `npm start` to start the nodejs backend server
+
 To setup the inai sample app for Android, follow the steps below,
 1. `git clone https://github.com/inaitech/inai-android-sample-integration`
 2. Navigate to  /app/Config.kt file and update the following values :
