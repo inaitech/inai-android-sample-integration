@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration
+package io.inai.android_sample_integration.google_pay
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,7 +13,8 @@ import com.google.android.gms.wallet.PaymentData
 import com.google.android.gms.wallet.WalletConstants
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
-import io.inai.android_sample_integration.helpers.Orders.orderId
+import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.InaiCheckout
 import io.inai.android_sdk.InaiConfig
@@ -26,6 +27,7 @@ class GooglePayActivity : AppCompatActivity() {
 
     private lateinit var googlePayRequestData: InaiGooglePayRequestData
     private lateinit var paymentFields: JSONObject
+    private var orderId = ""
 
     companion object {
         const val ARG_GPAY_PAYMENT_FIELDS = "gpay_payment_fields"
@@ -34,6 +36,7 @@ class GooglePayActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_pay)
+        orderId = intent?.getStringExtra("order_id") ?: ""
         val jsonString = intent.getStringExtra(ARG_GPAY_PAYMENT_FIELDS) ?: ""
         paymentFields = JSONObject(jsonString)
         initGooglePay()
