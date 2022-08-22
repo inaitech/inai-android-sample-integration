@@ -21,7 +21,7 @@ android {
     buildTypes {
         debug {
             buildConfigField "Boolean", "DebugMode", 'true'
-            buildConfigField "String", "InaiBaseUrl", '"https://api.inai.io/v1"'
+            buildConfigField "String", "InaiBaseUrl", '"http://localhost:5009"'
         }
 
         release {
@@ -29,7 +29,7 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "Boolean", "DebugMode", 'false'
-            buildConfigField "String", "InaiBaseUrl", '"https://api.inai.io/v1"'
+            buildConfigField "String", "InaiBaseUrl", '"http://localhost:5009"'
         }
     }
     compileOptions {
