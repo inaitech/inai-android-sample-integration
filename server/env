@@ -1,4 +1,4 @@
 client_username=<<inai_token>>
 client_password=<<inai_password>>
-currency=USD
-amount=100
+currency=<<currency>>
+amount=<<amount>>
