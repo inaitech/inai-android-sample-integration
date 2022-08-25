@@ -72,7 +72,7 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
                 )
             } catch (ex: Exception) {
                 //  Handle initialisation error
-                showAlert("Error while initialising sdk : $ex.message")
+                requireActivity().showAlert("Error while initialising sdk : $ex.message")
             }
         }
     }
@@ -80,17 +80,17 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
     override fun paymentFinished(result: InaiPaymentResult) {
         when (result.status) {
             InaiPaymentStatus.Success -> {
-                showAlert("Payment Success! ${result.data}")
+                requireActivity().showAlert("Payment Success! ${result.data}")
             }
             InaiPaymentStatus.Failed -> {
-                showAlert("Payment Failed! ${result.data}")
+                requireActivity().showAlert("Payment Failed! ${result.data}")
             }
             InaiPaymentStatus.Canceled -> {
                 var message = "Payment Canceled!"
                 if (result.data.has("message")) {
                     message = result.data.getString("message")
                 }
-                showAlert(message)
+                requireActivity().showAlert(message)
             }
         }
     }
@@ -131,7 +131,7 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
 
     private fun onError(error: String) {
         hideProgress()
-        showAlert(error)
+        requireActivity().showAlert(error)
     }
 
     private fun showProgress() {
