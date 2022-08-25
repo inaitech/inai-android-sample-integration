@@ -8,7 +8,15 @@ import io.inai.android_sample_integration.drop_in.DropInActivity
 import io.inai.android_sample_integration.headless.HeadlessActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
+enum class PaymentOperation {
+    MakePayment, PayWithSavedPaymentMethod, PresentCheckout
+}
+
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        const val ARG_PAYMENT_OPERATION = "arg_payment_option"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
