@@ -20,14 +20,11 @@ import kotlinx.serialization.json.JsonPrimitive
 
 class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), InaiCheckoutDelegate {
 
-    private val inaiBackendOrdersUrl: String = BuildConfig.InaiBaseUrl + "/orders"
+    private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
     private var orderId = ""
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
-        "test_order_id" to JsonPrimitive("test_order"),
-        "vat" to JsonPrimitive("6"),
-        "tax_percentage" to JsonPrimitive("12"),
-        "taxable_amount" to JsonPrimitive("50")
+        "test_order_id" to JsonPrimitive("test_order")
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,9 +116,9 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
             amount = Config.amount,
             currency = Config.currency,
             customer = OrderCustomer(
-                email = "testdev@inai.io",
-                first_name = "Dev",
-                last_name = "Smith",
+                email = "customer@example.com",
+                first_name = "John",
+                last_name = "Doe",
                 contact_number = "01010101010",
                 id = Config.customerId
             ),
@@ -140,5 +137,15 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
 
     private fun hideProgress() {
         progressBar.visibility = View.INVISIBLE
+    }
+
+    /**
+     *  Fragment cycle callback.
+     *  Here we cancel coroutine scope which in turn cancels any ongoing network operations
+     */
+    override fun onStop() {
+        super.onStop()
+        NetworkRequestHandler.cancelCoroutineScope()
+        hideProgress()
     }
 }
