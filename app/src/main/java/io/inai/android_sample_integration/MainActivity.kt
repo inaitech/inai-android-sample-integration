@@ -4,20 +4,33 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import io.inai.android_sample_integration.drop_in.DropInActivity
 import io.inai.android_sample_integration.headless.HeadlessActivity
+import kotlinx.android.synthetic.main.activity_main.*
+
+enum class PaymentOperation {
+    MakePayment, PayWithSavedPaymentMethod, PresentCheckout
+}
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var headless : Button
+    companion object {
+        const val ARG_PAYMENT_OPERATION = "arg_payment_option"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //  Remove Title bar
         supportActionBar?.title = "Android Sample Integration"
-        headless = findViewById<Button>(R.id.btn_headless)
 
-        headless.setOnClickListener {
+        btn_headless.setOnClickListener {
             val intent = Intent(this,HeadlessActivity::class.java)
+            startActivity(intent)
+        }
+
+        btn_dropin.setOnClickListener {
+            val intent = Intent(this,DropInActivity::class.java)
             startActivity(intent)
         }
     }

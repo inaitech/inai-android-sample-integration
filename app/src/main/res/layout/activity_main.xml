@@ -16,4 +16,14 @@
        android:background="@color/black"
        android:textColor="@color/white"
        />
+
+   <androidx.appcompat.widget.AppCompatButton
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/btn_dropin"
+       android:layout_marginTop="16dp"
+       android:text="Drop In Cehckout"
+       android:background="@color/black"
+       android:textColor="@color/white"
+       />
 </LinearLayout>

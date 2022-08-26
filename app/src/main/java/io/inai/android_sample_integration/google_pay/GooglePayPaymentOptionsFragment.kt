@@ -24,13 +24,10 @@ class GooglePayPaymentOptionsFragment : Fragment(R.layout.fragment_google_pay_pa
     private var orderId = ""
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
     private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
-    private val inaiBackendOrdersUrl: String = BuildConfig.InaiBaseUrl + "/orders"
-    private val inaiBackendPaymentOptionsUrl: String = BuildConfig.InaiBaseUrl + "/payment-method-options"
+    private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
+    private val inaiBackendPaymentOptionsUrl: String = BuildConfig.BaseUrl + "/payment-method-options"
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
-        "test_order_id" to JsonPrimitive("test_order"),
-        "vat" to JsonPrimitive("6"),
-        "tax_percentage" to JsonPrimitive("12"),
-        "taxable_amount" to JsonPrimitive("50")
+        "test_order_id" to JsonPrimitive("test_order")
     )
 
     companion object {
@@ -134,9 +131,9 @@ class GooglePayPaymentOptionsFragment : Fragment(R.layout.fragment_google_pay_pa
             amount = Config.amount,
             currency = Config.currency,
             customer = OrderCustomer(
-                email = "testdev@inai.io",
-                first_name = "Dev",
-                last_name = "Smith",
+                email = "customer@example.com",
+                first_name = "John",
+                last_name = "Doe",
                 contact_number = "01010101010",
                 id = Config.customerId
             ),

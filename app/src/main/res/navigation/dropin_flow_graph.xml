@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dropin_flow_graph"
+    app:startDestination="@id/productCheckoutFragment">
+
+    <fragment
+        android:id="@+id/productCheckoutFragment"
+        android:name="io.inai.android_sample_integration.headless.ProductCheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" >
+        <action
+            android:id="@+id/action_productCheckoutFragment_to_presentCheckoutFragment"
+            app:destination="@id/presentCheckoutFragment"
+            app:popUpTo="@id/productCheckoutFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/presentCheckoutFragment"
+        android:name="io.inai.android_sample_integration.drop_in.PresentCheckoutFragment"
+        android:label="fragment_present_checkout"
+        tools:layout="@layout/fragment_present_checkout" />
+</navigation>
