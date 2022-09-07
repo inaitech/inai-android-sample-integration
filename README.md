@@ -13,11 +13,15 @@ This repository demonstrates how to integrate Inai’s Android Framework into yo
 - Save a payment method as you pay
     - File : headless/make_payment/PaymentOptionsFragment.kt
 - Pay with a saved payment method
-      - File : headless/pay_with_saved_payment_method/PayWithSavedPaymentMethod.kt
+    - File : headless/pay_with_saved_payment_method/PayWithSavedPaymentMethod.kt
 - Validate Fields
-      - File : headless/validate_fields/ValidatePaymentFields.kt
+    - File : headless/validate_fields/ValidatePaymentFields.kt
 - Pay with Google Pay (Android) 
-- File : google_pay/GooglePayPaymentOptions.kt
+    - File : google_pay/GooglePayPaymentOptions.kt
+
+### Drop In Checkout
+- Make a payment using Inai's Checkout Interface
+    - File : drop_in/DropInActivity.kt
 
 ## Prerequisites
 - To begin, you will require the client username and client password values. Instructions to get this can be found [here](https://docs.inai.io/docs/getting-started)
