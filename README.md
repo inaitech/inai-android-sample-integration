@@ -7,21 +7,23 @@ This repository demonstrates how to integrate Inai’s Android Framework into yo
 ## Features
 ### Headless Checkout
 - Make a payment with variety of payment methods
-    - File : headless/make_payment/PaymentOptionsFragment.kt
+    - File : [MakePayment_PaymentOptionsFragment.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/headless/make_payment/MakePayment_PaymentOptionsFragment.kt)
 - Save a payment method
-    - File : headless/save_payment_method/SavePaymentMethod.kt
+    - File : [SavePaymentMethod_PaymentOptionsFragment.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/headless/save_payment_method/SavePaymentMethod_PaymentOptionsFragment.kt)
 - Save a payment method as you pay
-    - File : headless/make_payment/PaymentOptionsFragment.kt
+    - File : [SavePaymentMethod_PaymentOptionsFragment.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/headless/save_payment_method/SavePaymentMethod_PaymentOptionsFragment.kt)
 - Pay with a saved payment method
-    - File : headless/pay_with_saved_payment_method/PayWithSavedPaymentMethod.kt
+    - File : [PayWithSavedPaymentOptionsFragment.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/headless/pay_with_saved_payment_method/PayWithSavedPaymentOptionsFragment.kt)
 - Validate Fields
-    - File : headless/validate_fields/ValidatePaymentFields.kt
+    - File : [ValidateFields_PaymentOptionsFragment.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/headless/validate_fields/ValidateFields_PaymentOptionsFragment.kt)
+- Get Card Info
+    - File : [GetCardInfoFragment.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/headless/get_card_info/GetCardInfoFragment.kt)
 - Pay with Google Pay (Android) 
-    - File : google_pay/GooglePayPaymentOptions.kt
+    - File : [GooglePayActivity.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/google_pay/GooglePayActivity.kt)
 
 ### Drop In Checkout
 - Make a payment using Inai's Checkout Interface
-    - File : drop_in/DropInActivity.kt
+    - File : [PresentCheckoutFragment.kt](https://github.com/inaitech/inai-android-sample-integration/blob/main/app/src/main/java/io/inai/android_sample_integration/drop_in/PresentCheckoutFragment.kt)
 
 ## Prerequisites
 - To begin, you will require the client username and client password values. Instructions to get this can be found [here](https://docs.inai.io/docs/getting-started)
