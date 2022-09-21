@@ -14,16 +14,13 @@ import com.google.android.gms.wallet.WalletConstants
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.R
-import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.showAlert
-import io.inai.android_sdk.InaiCheckout
-import io.inai.android_sdk.InaiConfig
-import io.inai.android_sdk.InaiGooglePayRequestData
+import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.activity_google_pay.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-class GooglePayActivity : AppCompatActivity() {
+class GooglePayActivity : AppCompatActivity(), InaiCheckoutDelegate {
 
     private lateinit var googlePayRequestData: InaiGooglePayRequestData
     private lateinit var paymentFields: JSONObject
@@ -131,6 +128,24 @@ class GooglePayActivity : AppCompatActivity() {
         } catch (ex: Exception) {
             //  Handle initialization error
             showAlert("Error while initializing sdk : $ex.message")
+        }
+    }
+
+    override fun paymentFinished(result: InaiPaymentResult) {
+        when (result.status) {
+            InaiPaymentStatus.Success -> {
+                showAlert("Payment Success! ${result.data}")
+            }
+            InaiPaymentStatus.Failed -> {
+                showAlert("Payment Failed! ${result.data}")
+            }
+            InaiPaymentStatus.Canceled -> {
+                var message = "Payment Canceled!"
+                if (result.data.has("message")) {
+                    message = result.data.getString("message")
+                }
+                showAlert(message)
+            }
         }
     }
 
