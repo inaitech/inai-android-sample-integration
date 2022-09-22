@@ -20,6 +20,15 @@ import kotlinx.android.synthetic.main.activity_google_pay.*
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ *  To enable Google Pay in your app, you need to add the following <meta-data /> element
+ *  to the <application> element of your project's AndroidManifest.xml file.
+ *
+ *  <meta-data
+        android:name="com.google.android.gms.wallet.api.enabled"
+        android:value="true" />
+ *  Google Pay will not be available without this.
+ */
 class GooglePayActivity : AppCompatActivity(), InaiCheckoutDelegate {
 
     private lateinit var googlePayRequestData: InaiGooglePayRequestData
