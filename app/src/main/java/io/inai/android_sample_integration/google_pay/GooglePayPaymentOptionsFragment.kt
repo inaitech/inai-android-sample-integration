@@ -42,10 +42,11 @@ class GooglePayPaymentOptionsFragment : Fragment(R.layout.fragment_google_pay_pa
 
     private fun prepareUi() {
         paymentOptionsAdapter.clickListener = { paymentMethodOption ->
-           // Start Google Pay activity
+            // Start Google Pay activity
             val intent = Intent(requireActivity(), GooglePayActivity::class.java)
             val jsonString = Json.encodeToString(paymentMethodOption)
             intent.putExtra(GooglePayActivity.ARG_GPAY_PAYMENT_FIELDS, jsonString)
+            intent.putExtra("order_id", orderId)
             startActivity(intent)
         }
 
