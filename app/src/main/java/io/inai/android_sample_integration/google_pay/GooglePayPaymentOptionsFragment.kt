@@ -23,7 +23,6 @@ class GooglePayPaymentOptionsFragment : Fragment(R.layout.fragment_google_pay_pa
 
     private var orderId = ""
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken)
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private val inaiBackendPaymentOptionsUrl: String = BuildConfig.BaseUrl + "/payment-method-options"
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
@@ -68,7 +67,6 @@ class GooglePayPaymentOptionsFragment : Fragment(R.layout.fragment_google_pay_pa
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to inaiBackendOrdersUrl,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.POST,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_POST_DATA_JSON to Json.encodeToString(orderPostData)
         )
         makeNetworkRequest(networkConfig, ::onOrderPrepared)
@@ -86,7 +84,6 @@ class GooglePayPaymentOptionsFragment : Fragment(R.layout.fragment_google_pay_pa
         val url = "$inaiBackendPaymentOptionsUrl?order_id=$orderId&country=${Config.countryCode}"
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to url,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.GET
         )
         makeNetworkRequest(networkConfig, ::onPaymentOptionsFetched)

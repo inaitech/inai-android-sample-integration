@@ -20,7 +20,6 @@ import kotlinx.serialization.json.JsonPrimitive
 class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), InaiCheckoutDelegate {
 
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken)
     private var orderId = ""
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
         "test_order_id" to JsonPrimitive("test_order")
@@ -37,7 +36,6 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to inaiBackendOrdersUrl,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.POST,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_POST_DATA_JSON to Json.encodeToString(orderPostData)
         )
         makeNetworkRequest(networkConfig, ::onOrderPrepared)
@@ -52,9 +50,9 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
     }
 
     private fun initializeCheckout() {
-        if (Config.inaiToken.isNotEmpty() && orderId.isNotEmpty()) {
+        if (BuildConfig.InaiToken.isNotEmpty() && orderId.isNotEmpty()) {
             val config = InaiConfig(
-                token = Config.inaiToken,
+                token = BuildConfig.InaiToken,
                 orderId = orderId,
                 countryCode = Config.countryCode,
                 redirectUrl = ""

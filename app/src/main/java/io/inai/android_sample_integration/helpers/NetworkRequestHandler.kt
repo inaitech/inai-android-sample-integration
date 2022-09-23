@@ -51,7 +51,6 @@ object NetworkRequestHandler {
             setRequestProperty("charset", "utf-8")
             setRequestProperty("Accept", "application/json")
             setRequestProperty("Content-Type", "application/json")
-            setRequestProperty("Authorization", networkConfig[KEY_AUTH_STRING])
         }
 
         //  Initialize a coroutine scope with a job and a error handler.
@@ -88,17 +87,6 @@ object NetworkRequestHandler {
         }
     }
 
-    //  This method takes the username and password as params and encode them into
-    //  a Base64 string for authentication.
-    fun getEncodedAuthString(inaiSdkUsername: String): String {
-        val authString = "$inaiSdkUsername"
-        val encodedCredentials =
-            Base64.encodeToString(
-                authString.toByteArray(StandardCharsets.UTF_8),
-                Base64.NO_WRAP
-            )
-        return "BASIC $encodedCredentials"
-    }
     //  This cancels any running coroutine scopes. WHen a scope cancels any background work
     //  that was executing will be cancelled.
     fun cancelCoroutineScope(){

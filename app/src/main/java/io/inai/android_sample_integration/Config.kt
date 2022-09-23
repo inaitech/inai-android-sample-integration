@@ -4,7 +4,6 @@ package io.inai.android_sample_integration
 //  Replace the values with your credentials.
 object Config {
 
-    var inaiToken = "<<inai_token>>"
     var countryCode = "<<country>>"
     var currency = "<<currency>>"
     var customerId = "<<customer_id>>"

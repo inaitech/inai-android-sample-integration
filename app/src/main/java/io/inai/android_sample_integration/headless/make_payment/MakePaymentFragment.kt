@@ -6,8 +6,8 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.Config.countryCode
-import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.ExpiryDateFormatter
 import io.inai.android_sample_integration.headless.make_payment.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
@@ -137,9 +137,9 @@ class MakePaymentFragment : Fragment(R.layout.fragment_make_payment), InaiChecko
 
     //  Call SDK method makePayment() to initiate a headless checkout.
     private fun makeHeadlessPayment() {
-        if (inaiToken.isNotEmpty() && orderId.isNotEmpty()) {
+        if (BuildConfig.InaiToken.isNotEmpty() && orderId.isNotEmpty()) {
             val config = InaiConfig(
-                token = inaiToken,
+                token = BuildConfig.InaiToken,
                 orderId = orderId,
                 countryCode = countryCode,
                 redirectUrl = ""
