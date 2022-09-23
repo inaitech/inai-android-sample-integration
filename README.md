@@ -42,9 +42,15 @@ This repository demonstrates how to integrate Inai’s Android Framework into yo
 To start the backend NodeJS server:
 1. Navigate to the ./server folder at the root level.
 2. Run command `npm install` to install the dependency packages.
-3. Add a new .env file the following variables:
-    1. client_username
-    2. client_password
+3. Update the following environment variables in the `.env` file. This can be accessed from inai's merchant dashboard under `Settings > Credentials`
+    - client_username
+    - client_password
+
+| **variables**   | **description**                                               |
+|---------------  |---------------------------------------------------------------|
+| client_username | client username under **Settings > Credentials** in dashboard |
+| client_password | client password under **Settings > Credentials** in dashboard |
+
 4. Run command `npm start` to start the nodejs backend server
 
 To setup the inai sample app for Android, follow the steps below,
