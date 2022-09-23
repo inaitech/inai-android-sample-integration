@@ -1,7 +1,6 @@
 package io.inai.android_sample_integration.drop_in
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import io.inai.android_sample_integration.BuildConfig
@@ -49,7 +48,6 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
         val orderResult = json.decodeFromString<OrderResult>(orderResponse)
         Config.customerId = orderResult.customer_id
         orderId = orderResult.id
-        Log.d("ORDER_ID", orderId)
         initializeCheckout()
     }
 
