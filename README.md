@@ -49,13 +49,14 @@ To start the backend NodeJS server:
 
 To setup the inai sample app for Android, follow the steps below,
 1. `git clone https://github.com/inaitech/inai-android-sample-integration`
-2. Navigate to  /app/Config.kt file and update the following values :
-    - Client Username
-    - Client Password
+2. Navigate to /app/build.gradle file and update the following values : 
+    - Inai Token
+    - Base Url   // backend api server url eg: http://localhost:5999. If you are using a emulator, please replace localhost with the system IP address.
+3. Navigate to Config.kt file and update the following values :
     - Country
     - Amount      // for order creation
     - Currency    // for order creation
-3. Click on Run in Android Studio to install the app.
+4. Click on Run in Android Studio to install the app.
 
 
 ## FAQs
