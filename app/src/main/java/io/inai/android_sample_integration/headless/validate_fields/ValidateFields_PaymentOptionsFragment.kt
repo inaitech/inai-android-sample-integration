@@ -24,7 +24,6 @@ class ValidateFields_PaymentOptionsFragment : Fragment(R.layout.fragment_validat
 
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private val inaiBackendPaymentOptionsUrl: String = BuildConfig.BaseUrl + "/payment-method-options"
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
     private var orderId = ""
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
         "test_order_id" to JsonPrimitive("test_order")
@@ -72,7 +71,6 @@ class ValidateFields_PaymentOptionsFragment : Fragment(R.layout.fragment_validat
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to inaiBackendOrdersUrl,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.POST,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_POST_DATA_JSON to Json.encodeToString(orderPostData)
         )
         makeNetworkRequest(networkConfig, ::onOrderPrepared)
@@ -91,7 +89,6 @@ class ValidateFields_PaymentOptionsFragment : Fragment(R.layout.fragment_validat
         val url = "$inaiBackendPaymentOptionsUrl?order_id=$orderId&country=${Config.countryCode}"
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to url,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.GET
         )
         makeNetworkRequest(networkConfig, ::onPaymentOptionsFetched)

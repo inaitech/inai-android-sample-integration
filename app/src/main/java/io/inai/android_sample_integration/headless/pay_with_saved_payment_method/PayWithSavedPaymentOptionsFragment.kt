@@ -15,7 +15,6 @@ import io.inai.android_sample_integration.Config.customerId
 import io.inai.android_sample_integration.google_pay.GooglePayActivity
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
-import io.inai.android_sample_integration.headless.make_payment.MakePayment_PaymentOptionsFragment
 import io.inai.android_sample_integration.helpers.*
 import kotlinx.android.synthetic.main.fragment_pay_with_saved_payment_options.*
 import kotlinx.serialization.decodeFromString
@@ -29,7 +28,6 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
     private var savedPaymentMethodId = ""
     private var savedPaymentMethodType = ""
     private var orderId = ""
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private val inaiBackendPaymentOptionsUrl: String = BuildConfig.BaseUrl + "/payment-method-options"
     private val inaiBackendSavedPaymentMethod: String = BuildConfig.BaseUrl + "/customers/"
@@ -85,7 +83,6 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to inaiBackendOrdersUrl,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.POST,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_POST_DATA_JSON to Json.encodeToString(orderPostData)
         )
         makeNetworkRequest(networkConfig, ::onOrderPrepared)
@@ -103,7 +100,6 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
         val url = "$inaiBackendSavedPaymentMethod$customerId/payment-methods"
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to url,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.GET
         )
         makeNetworkRequest(networkConfig, ::onSavedPaymentMethodsFetched)
@@ -127,7 +123,6 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
         val url = "$inaiBackendPaymentOptionsUrl?order_id=$orderId&country=${Config.countryCode}&saved_payment_method=true"
         val networkConfig = mutableMapOf(
             NetworkRequestHandler.KEY_URL to url,
-            NetworkRequestHandler.KEY_AUTH_STRING to authenticationString,
             NetworkRequestHandler.KEY_REQUEST_TYPE to NetworkRequestHandler.GET
         )
         makeNetworkRequest(networkConfig, ::onPaymentOptionsFetched)
@@ -177,7 +172,7 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
                 first_name = "John",
                 last_name = "Doe",
                 contact_number = "01010101010",
-                id = Config.customerId
+                id = customerId
             ),
             metadata = JsonObject(orderMetadata)
         )

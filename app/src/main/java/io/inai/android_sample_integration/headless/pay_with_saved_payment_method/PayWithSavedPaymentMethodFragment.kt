@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Spinner
+import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.HeadlessActivity
@@ -135,9 +136,9 @@ class PayWithSavedPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_sa
     }
 
     private fun makePayment() {
-        if (Config.inaiToken.isNotEmpty() && orderId.isNotEmpty()) {
+        if (BuildConfig.InaiToken.isNotEmpty() && orderId.isNotEmpty()) {
             val config = InaiConfig(
-                token = Config.inaiToken,
+                token = BuildConfig.InaiToken,
                 orderId = orderId,
                 countryCode = Config.countryCode,
                 redirectUrl = ""

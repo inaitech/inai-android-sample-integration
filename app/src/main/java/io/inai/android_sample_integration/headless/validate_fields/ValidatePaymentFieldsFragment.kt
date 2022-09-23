@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Spinner
+import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.Config
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.headless.validate_fields.FormBuilder.Companion.FIELD_TYPE_CHECKBOX
@@ -111,7 +112,7 @@ class ValidatePaymentFieldsFragment : Fragment(R.layout.fragment_validate_paymen
     private fun validateFields() {
         //  Init Inai SDK
         val config = InaiConfig(
-            token = Config.inaiToken,
+            token = BuildConfig.InaiToken,
             orderId = orderId,
             countryCode = Config.countryCode
         )

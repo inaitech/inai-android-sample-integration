@@ -11,8 +11,8 @@ import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.wallet.PaymentData
 import com.google.android.gms.wallet.WalletConstants
+import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.Config.countryCode
-import io.inai.android_sample_integration.Config.inaiToken
 import io.inai.android_sample_integration.R
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.*
@@ -128,7 +128,7 @@ class GooglePayActivity : AppCompatActivity(), InaiCheckoutDelegate {
             //  Process google token for payment details data
             val paymentDetails = InaiCheckout.getGooglePayRequestData(paymentData)
             val config = InaiConfig(
-                token = inaiToken,
+                token = BuildConfig.InaiToken,
                 orderId = orderId,
                 countryCode = countryCode,
             )
