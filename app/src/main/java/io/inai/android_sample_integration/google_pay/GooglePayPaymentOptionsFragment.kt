@@ -23,7 +23,7 @@ class GooglePayPaymentOptionsFragment : Fragment(R.layout.fragment_google_pay_pa
 
     private var orderId = ""
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
+    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken)
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private val inaiBackendPaymentOptionsUrl: String = BuildConfig.BaseUrl + "/payment-method-options"
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(

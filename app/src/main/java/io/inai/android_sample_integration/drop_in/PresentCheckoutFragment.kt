@@ -21,7 +21,7 @@ import kotlinx.serialization.json.JsonPrimitive
 class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), InaiCheckoutDelegate {
 
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
+    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken)
     private var orderId = ""
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
         "test_order_id" to JsonPrimitive("test_order")

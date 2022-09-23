@@ -90,8 +90,8 @@ object NetworkRequestHandler {
 
     //  This method takes the username and password as params and encode them into
     //  a Base64 string for authentication.
-    fun getEncodedAuthString(inaiSdkUsername: String, inaiSdkPassword: String): String {
-        val authString = "$inaiSdkUsername:$inaiSdkPassword"
+    fun getEncodedAuthString(inaiSdkUsername: String): String {
+        val authString = "$inaiSdkUsername"
         val encodedCredentials =
             Base64.encodeToString(
                 authString.toByteArray(StandardCharsets.UTF_8),

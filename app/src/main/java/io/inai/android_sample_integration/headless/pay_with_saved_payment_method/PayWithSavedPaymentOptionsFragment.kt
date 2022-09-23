@@ -29,7 +29,7 @@ class PayWithSavedPaymentOptionsFragment : Fragment(R.layout.fragment_pay_with_s
     private var savedPaymentMethodId = ""
     private var savedPaymentMethodType = ""
     private var orderId = ""
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
+    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken)
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private val inaiBackendPaymentOptionsUrl: String = BuildConfig.BaseUrl + "/payment-method-options"
     private val inaiBackendSavedPaymentMethod: String = BuildConfig.BaseUrl + "/customers/"

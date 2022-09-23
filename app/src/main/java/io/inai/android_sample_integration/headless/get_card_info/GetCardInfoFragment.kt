@@ -28,7 +28,7 @@ class GetCardInfoFragment : Fragment(R.layout.fragment_get_card_info), InaiCardI
     private lateinit var editText: EditText
     private lateinit var textView: TextView
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
-    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken, Config.inaiPassword)
+    private val authenticationString = NetworkRequestHandler.getEncodedAuthString(Config.inaiToken)
     private var orderId = ""
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
         "test_order_id" to JsonPrimitive("test_order")
