@@ -1,6 +1,7 @@
-package io.inai.android_sample_integration.drop_in.add_payment_method
+package io.inai.android_sample_integration.drop_in.pay_with_payment_method
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import io.inai.android_sample_integration.BuildConfig
@@ -10,15 +11,14 @@ import io.inai.android_sample_integration.helpers.NetworkRequestHandler
 import io.inai.android_sample_integration.helpers.json
 import io.inai.android_sample_integration.helpers.showAlert
 import io.inai.android_sdk.*
-import kotlinx.android.synthetic.main.fragment_present_checkout.btn_buy
-import kotlinx.android.synthetic.main.fragment_present_checkout.progressBar
+import kotlinx.android.synthetic.main.fragment_pay_with_payment_method.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
-class AddPaymentMethodFragment : Fragment(R.layout.fragment_add_payment_method), InaiPaymentMethodDelegate {
+class PayWithPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_payment_method), InaiCheckoutDelegate {
 
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private var orderId = ""
@@ -49,10 +49,10 @@ class AddPaymentMethodFragment : Fragment(R.layout.fragment_add_payment_method),
         val orderResult = json.decodeFromString<OrderResult>(orderResponse)
         Config.customerId = orderResult.customer_id
         orderId = orderResult.id
-        addPaymentMethod()
+        payWithPaymentMethod()
     }
 
-    private fun addPaymentMethod() {
+    private fun payWithPaymentMethod() {
         if (BuildConfig.InaiToken.isNotEmpty() && orderId.isNotEmpty()) {
             val config = InaiConfig(
                 token = BuildConfig.InaiToken,
@@ -62,8 +62,8 @@ class AddPaymentMethodFragment : Fragment(R.layout.fragment_add_payment_method),
             )
             try {
                 val inaiCheckout = InaiCheckout(config)
-                inaiCheckout.addPaymentMethod(
-                    "card",
+                inaiCheckout.presentPayWithPaymentMethod(
+                    Config.paymentMethodId,
                     requireContext(),
                     this
                 )
@@ -74,16 +74,16 @@ class AddPaymentMethodFragment : Fragment(R.layout.fragment_add_payment_method),
         }
     }
 
-    override fun paymentMethodSaved(result: InaiPaymentMethodResult) {
+    override fun paymentFinished(result: InaiPaymentResult) {
         when (result.status) {
-            InaiPaymentMethodStatus.Success -> {
+            InaiPaymentStatus.Success -> {
                 requireActivity().showAlert("Payment Success! ${result.data}")
-                Config.paymentMethodId = result.data.getString("payment_method_id")
+                Log.d("Result", "${result.data}")
             }
-            InaiPaymentMethodStatus.Failed -> {
+            InaiPaymentStatus.Failed -> {
                 requireActivity().showAlert("Payment Failed! ${result.data}")
             }
-            InaiPaymentMethodStatus.Canceled -> {
+            InaiPaymentStatus.Canceled -> {
                 var message = "Payment Canceled!"
                 if (result.data.has("message")) {
                     message = result.data.getString("message")
