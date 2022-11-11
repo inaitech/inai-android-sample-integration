@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.drop_in
+package io.inai.android_sample_integration.drop_in.presentCheckout
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

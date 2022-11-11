@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/presentCheckoutFragment"
-        android:name="io.inai.android_sample_integration.drop_in.PresentCheckoutFragment"
+        android:name="io.inai.android_sample_integration.drop_in.presentCheckout.PresentCheckoutFragment"
         android:label="fragment_present_checkout"
         tools:layout="@layout/fragment_present_checkout" />
 </navigation>
