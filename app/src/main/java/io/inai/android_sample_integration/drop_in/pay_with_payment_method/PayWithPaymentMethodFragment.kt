@@ -69,7 +69,7 @@ class PayWithPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_payment
                 )
             } catch (ex: Exception) {
                 //  Handle initialisation error
-                requireActivity().showAlert("Error while initialising sdk : $ex.message")
+                showAlert("Error while initialising sdk : $ex.message")
             }
         }
     }
@@ -77,18 +77,18 @@ class PayWithPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_payment
     override fun paymentFinished(result: InaiPaymentResult) {
         when (result.status) {
             InaiPaymentStatus.Success -> {
-                requireActivity().showAlert("Payment Success! ${result.data}")
+                showAlert("Payment Success! ${result.data}")
                 Log.d("Result", "${result.data}")
             }
             InaiPaymentStatus.Failed -> {
-                requireActivity().showAlert("Payment Failed! ${result.data}")
+                showAlert("Payment Failed! ${result.data}")
             }
             InaiPaymentStatus.Canceled -> {
                 var message = "Payment Canceled!"
                 if (result.data.has("message")) {
                     message = result.data.getString("message")
                 }
-                requireActivity().showAlert(message)
+                showAlert(message)
             }
         }
 
@@ -130,7 +130,7 @@ class PayWithPaymentMethodFragment : Fragment(R.layout.fragment_pay_with_payment
 
     private fun onError(error: String) {
         hideProgress()
-        requireActivity().showAlert(error)
+        showAlert(error)
     }
 
     private fun showProgress() {
