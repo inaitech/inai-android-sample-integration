@@ -24,9 +24,6 @@ class ProductCheckoutFragment : Fragment(R.layout.fragment_checkout) {
                 PaymentOperation.PayWithSavedPaymentMethod -> findNavController().navigate(
                     R.id.action_checkoutFragment_to_payWithSavedPaymentOptions
                 )
-                PaymentOperation.PresentCheckout -> findNavController().navigate(
-                    R.id.action_productCheckoutFragment_to_presentCheckoutFragment
-                )
             }
         }
     }

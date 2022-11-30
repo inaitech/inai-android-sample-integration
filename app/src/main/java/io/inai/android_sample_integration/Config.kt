@@ -8,4 +8,5 @@ object Config {
     var currency = "<<currency>>"
     var customerId = "<<customer_id>>"
     var amount = "<<amount>>"
+    var paymentMethodId = "<<payment_method_id>>"
 }

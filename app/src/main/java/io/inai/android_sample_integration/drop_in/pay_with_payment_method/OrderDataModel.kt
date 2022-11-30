@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.drop_in
+package io.inai.android_sample_integration.drop_in.pay_with_payment_method
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement

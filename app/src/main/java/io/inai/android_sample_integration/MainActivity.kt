@@ -9,7 +9,7 @@ import io.inai.android_sample_integration.headless.HeadlessActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 enum class PaymentOperation {
-    MakePayment, PayWithSavedPaymentMethod, PresentCheckout
+    MakePayment, PayWithSavedPaymentMethod
 }
 
 class MainActivity : AppCompatActivity() {

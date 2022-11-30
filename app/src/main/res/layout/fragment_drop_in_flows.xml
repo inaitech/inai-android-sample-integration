@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".drop_in.DropInFlowsFragment">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_checkout"
+        android:text="Checkout"
+        android:layout_marginTop="16dp"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_add_payment_method"
+        android:text="Add A Payment Method"
+        android:layout_marginTop="16dp"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_pay_with_payment_method"
+        android:text="Pay With A Payment Method"
+        android:layout_marginTop="16dp"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        />
+
+</LinearLayout>

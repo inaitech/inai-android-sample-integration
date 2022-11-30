@@ -1,4 +1,4 @@
-package io.inai.android_sample_integration.drop_in
+package io.inai.android_sample_integration.drop_in.presentCheckout
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -27,7 +27,9 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prepareOrder()
+       btn_buy.setOnClickListener {
+           prepareOrder()
+       }
     }
 
     private fun prepareOrder() {
@@ -65,7 +67,7 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
                 )
             } catch (ex: Exception) {
                 //  Handle initialisation error
-                requireActivity().showAlert("Error while initialising sdk : $ex.message")
+                showAlert("Error while initialising sdk : $ex.message")
             }
         }
     }
@@ -73,17 +75,17 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
     override fun paymentFinished(result: InaiPaymentResult) {
         when (result.status) {
             InaiPaymentStatus.Success -> {
-                requireActivity().showAlert("Payment Success! ${result.data}")
+                showAlert("Payment Success! ${result.data}")
             }
             InaiPaymentStatus.Failed -> {
-                requireActivity().showAlert("Payment Failed! ${result.data}")
+                showAlert("Payment Failed! ${result.data}")
             }
             InaiPaymentStatus.Canceled -> {
                 var message = "Payment Canceled!"
                 if (result.data.has("message")) {
                     message = result.data.getString("message")
                 }
-                requireActivity().showAlert(message)
+                showAlert(message)
             }
         }
     }
@@ -124,7 +126,7 @@ class PresentCheckoutFragment : Fragment(R.layout.fragment_present_checkout), In
 
     private fun onError(error: String) {
         hideProgress()
-        requireActivity().showAlert(error)
+        showAlert(error)
     }
 
     private fun showProgress() {
