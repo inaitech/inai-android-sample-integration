@@ -49,8 +49,7 @@
         <action
             android:id="@+id/action_paymentOptionsFragment_to_paymentFieldsFragment"
             app:destination="@id/paymentFieldsFragment"
-            app:popUpTo="@id/headlessFragment"
-            app:popUpToInclusive="false" />
+            />
     </fragment>
     <fragment
         android:id="@+id/paymentFieldsFragment"

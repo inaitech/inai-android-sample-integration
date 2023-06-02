@@ -22,7 +22,7 @@
        android:layout_height="wrap_content"
        android:id="@+id/btn_dropin"
        android:layout_marginTop="16dp"
-       android:text="Drop In Cehckout"
+       android:text="Drop In Checkout"
        android:background="@color/black"
        android:textColor="@color/white"
        />

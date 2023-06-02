@@ -43,8 +43,8 @@ class FormFieldEditText(context: Context, formField: FormField) : AppCompatEditT
     }
 
     private fun verifyInputLength(input: String) {
-        val maxLength = formField.validations.max_length ?: 0
-        val minLength = formField.validations.min_length ?: 0
+        val maxLength = formField.validations?.max_length ?: 0
+        val minLength = formField.validations?.min_length ?: 0
         if (maxLength != 0 && minLength != 0) {
             if (input.length in minLength..maxLength) {
                 showValidInputState()
@@ -55,7 +55,7 @@ class FormFieldEditText(context: Context, formField: FormField) : AppCompatEditT
     }
 
     private fun verifyInputWithRegex(input: String) {
-        val inputRegex = Pattern.compile(formField.validations.input_mask_regex ?: ".*")
+        val inputRegex = Pattern.compile(formField.validations?.input_mask_regex ?: ".*")
         if (!inputRegex.matcher(input).matches())
             showErrorState()
         else

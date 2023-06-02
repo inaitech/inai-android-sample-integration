@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_margin="10dp"
+        android:layout_alignParentStart="true"
+        android:id="@+id/txt_payment_option"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/upi_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_payment_option"
+        android:layout_margin="10dp"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardPreventCornerOverlap="true"
+        android:visibility="gone">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/ll_upi_intent"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/btn_pay_upi_intent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_upi_intent"
+            android:layout_alignWithParentIfMissing="true"
+            android:text="@string/Pay"
+            android:visibility="gone"
+            android:layout_marginLeft="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_upi_collect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_pay_upi_intent"
+            android:layout_alignWithParentIfMissing="true"
+            android:orientation="vertical"
+            android:layout_margin="10dp">
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/upi_card_view"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_margin="10dp"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardPreventCornerOverlap="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_paymentMode"
+            android:orientation="vertical"
+            android:layout_margin="10dp">
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

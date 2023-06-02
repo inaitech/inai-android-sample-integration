@@ -23,26 +23,32 @@ data class PaymentMethodOption(
     @SerialName("configs")
     val configs: @RawValue JsonElement? = null,
     @SerialName("form_fields")
-    val formFields: @RawValue List<FormField>,
+    var formFields: @RawValue List<FormField>,
     @SerialName("rail_code")
-    val railCode: String,
+    var railCode: String,
+    @SerialName("category")
+    val category: String? = null,
+    @SerialName("symbol_url")
+    val symbol_url: String ?= null,
+    @SerialName("modes")
+    var modes:  @RawValue List<Mode> ?= null
 ) : Parcelable
 
 @Serializable
 @Parcelize
 data class FormField(
     @SerialName("field_type")
-    val fieldType: String,
+    val fieldType: String? = null,
     @SerialName("label")
-    val label: String,
+    val label: String? = null,
     @SerialName("name")
-    val name: String,
+    val name: String? = null,
     @SerialName("placeholder")
     val placeholder: String? = null,
     @SerialName("required")
-    val required: Boolean,
+    val required: Boolean ? = false,
     @SerialName("validations")
-    val validations: Validations,
+    val validations: Validations? = null,
     @SerialName("data")
     val data: Data? = null
 ) : Parcelable
@@ -92,8 +98,22 @@ data class Data(
 @Serializable
 @Parcelize
 data class Values(
-    val label: String,
-    val value: String
+    val label: String? = null,
+    val value: String? = null,
+    val symbol_url: String? = null
+) : Parcelable
+
+@Serializable
+@Parcelize
+data class Mode(
+    @SerialName("name")
+    val name: String,
+    @SerialName("code")
+    val code: String,
+    @SerialName("supported_platforms")
+    val supported_platforms: List<String>,
+    @SerialName("form_fields")
+    var formFields: @RawValue List<FormField>,
 ) : Parcelable
 
 
