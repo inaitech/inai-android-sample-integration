@@ -1,5 +1,6 @@
 package io.inai.android_sample_integration.headless.make_payment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.InputType
@@ -9,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import io.inai.android_sample_integration.R
-
 
 class FormBuilder(private val context: Context) {
 
@@ -54,6 +54,16 @@ class FormBuilder(private val context: Context) {
         checkBox.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
         checkBox.tag = formField.name
         return checkBox
+    }
+
+    @SuppressLint("NewApi")
+    fun createButton(mode: Mode):Button{
+        val button = Button(context)
+        button.text = "Pay"
+        button.tag = mode
+        button.isEnabled = true
+        button.setBackgroundColor(context.getColor(R.color.teal_700))
+        return button
     }
 
     fun createRadioButtonGroup(formField: FormField): RadioGroup {

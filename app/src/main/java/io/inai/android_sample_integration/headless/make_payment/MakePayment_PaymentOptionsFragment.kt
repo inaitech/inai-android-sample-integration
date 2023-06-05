@@ -36,8 +36,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
     private val orderMetadata: Map<String, JsonPrimitive> = mutableMapOf(
         "test_order_id" to JsonPrimitive("test_order")
     )
-   // private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
-    private val paymentOptionsAdapter: PaymentOptionsAdapterNew by lazy { PaymentOptionsAdapterNew() }
+    private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
 
     private val bundle = Bundle()
 
@@ -60,9 +59,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         paymentOptionsAdapter.clickListener = { paymentMethodOption ->
             checkIfPaymentOptionIsGPay(paymentMethodOption)
         }
-        paymentOptionsAdapter.payBtnClickListener = { paymentDetails: JSONObject, paymentMethodOption: PaymentMethodOption ->
-            makePayment(paymentDetails, paymentMethodOption)
-        }
+
         rv_payment_options.apply {
             adapter = paymentOptionsAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -171,43 +168,12 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
             intent.putExtra(ARG_ORDER_ID,orderId)
             startActivity(intent)
         } else {
-            //removing the upi_intent form fields since we already displayed upi_intent in the payment-options page
-            if (paymentMethodOption.railCode == Constants.RAIL_CODE_UPI) {
-                val filteredList = paymentMethodOption.modes?.filter {
-                    it.code != Constants.MODE_CODE_UPI_INTENT
-                }
-                paymentMethodOption.modes = filteredList
-            }
-
             //  Navigate to payments screen to proceed with the selected payment option
             bundle.apply {
                 putString(ARG_ORDER_ID, orderId)
                 putParcelable(ARG_PAYMENT_OPTION, paymentMethodOption as Parcelable)
             }
             goToPaymentScreen()
-        }
-    }
-
-    private fun makePayment(paymentDetails: JSONObject, paymentMethodOption: PaymentMethodOption) {
-        if (BuildConfig.InaiToken.isNotEmpty() && orderId.isNotEmpty()) {
-            val config = InaiConfig(
-                token = BuildConfig.InaiToken,
-                orderId = orderId,
-                countryCode = countryCode,
-                redirectUrl = ""
-            )
-            try {
-                val inaiCheckout = InaiCheckout(config)
-                inaiCheckout.makePayment(
-                    paymentMethodOption.railCode!!,
-                    paymentDetails,
-                    context = requireContext(),
-                    delegate = this
-                )
-            } catch (ex: Exception) {
-                //  Handle initialisation error
-                showAlert("Error while initialising sdk : $ex.message")
-            }
         }
     }
 

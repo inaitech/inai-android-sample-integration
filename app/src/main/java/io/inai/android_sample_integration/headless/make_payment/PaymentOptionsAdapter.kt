@@ -43,7 +43,7 @@ class PaymentOptionsAdapter() :
         private val name: TextView by lazy { itemView.findViewById(R.id.txt_payment_option) }
 
         fun setData(item: PaymentMethodOption) {
-            name.text = getSanitizedText(item.railCode ?: "")
+            name.text = getSanitizedText(item.category ?: "")
         }
     }
 }

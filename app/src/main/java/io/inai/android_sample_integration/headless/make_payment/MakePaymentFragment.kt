@@ -56,55 +56,100 @@ class MakePaymentFragment : Fragment(R.layout.fragment_make_payment), InaiChecko
             if (walletPaymentOptions != null && walletPaymentOptions.isNotEmpty())
                 formLayout.addView(formBuilder.createRadioButtonGroupByRailCode(walletPaymentOptions))
         }
+
+        //If paymentMethod modes present iterate through the modes and render the formFields
         if (paymentMethodOption.modes != null && paymentMethodOption.modes!!.isNotEmpty()) {
             paymentMethodOption.modes?.forEach {
                 if (it.formFields.isNotEmpty() && it.supported_platforms.contains("MOBILE")) {
-                    it.formFields.forEachIndexed { _, formField ->
-                        formLayout.addView(formBuilder.createLabel(formField))
-                        when (formField.fieldType) {
-                            FIELD_TYPE_CHECKBOX -> {
-                                formLayout.addView(formBuilder.createCheckBox(formField))
-                            }
-                            FIELD_TYPE_SELECT -> {
-                                formLayout.addView(formBuilder.createPicker(formField))
-                            }
-                            FIELD_TYPE_RADIO -> {
-                                formLayout.addView(formBuilder.createRadioButtonGroup(formField))
-                            }
-                            else -> {
-                                val editText = formBuilder.createTextField(formField)
-                                // Add card expiry textWatchers if fields are for card expiry formatting
-                                if (formField.name == "expiry") {
-                                    editText.addTextChangedListener(ExpiryDateFormatter(editText))
-                                }
-                                formLayout.addView(editText)
-                            }
-                        }
-                    }
-                }
+                    renderFormFields(it.formFields)
 
+                    val button = formBuilder.createButton(it)
+                    button.setOnClickListener {
+                        val mode = button.tag as Mode
+                        generatePaymentDetailsByMode(mode)
+                        makeHeadlessPayment()
+                    }
+                    formLayout.addView(button)
+                    btn_proceed.visibility = View.GONE
+                }
             }
         } else {
-            paymentMethodOption.formFields.forEachIndexed { _, formField ->
-                formLayout.addView(formBuilder.createLabel(formField))
-                when (formField.fieldType) {
-                    FIELD_TYPE_CHECKBOX -> {
-                        formLayout.addView(formBuilder.createCheckBox(formField))
+            renderFormFields(paymentMethodOption.formFields)
+            btn_proceed.visibility = View.VISIBLE
+        }
+    }
+
+    private fun renderFormFields(formFields: List<FormField>) {
+        formFields.forEachIndexed { _, formField ->
+            formLayout.addView(formBuilder.createLabel(formField))
+            when (formField.fieldType) {
+                FIELD_TYPE_CHECKBOX -> {
+                    formLayout.addView(formBuilder.createCheckBox(formField))
+                }
+                FIELD_TYPE_SELECT -> {
+                    formLayout.addView(formBuilder.createPicker(formField))
+                }
+                FIELD_TYPE_RADIO -> {
+                    formLayout.addView(formBuilder.createRadioButtonGroup(formField))
+                }
+                else -> {
+                    val editText = formBuilder.createTextField(formField)
+                    // Add card expiry textWatchers if fields are for card expiry formatting
+                    if (formField.name == "expiry") {
+                        editText.addTextChangedListener(ExpiryDateFormatter(editText))
                     }
-                    FIELD_TYPE_SELECT -> {
-                        formLayout.addView(formBuilder.createPicker(formField))
-                    }
-                    else -> {
-                        val editText = formBuilder.createTextField(formField)
-                        // Add card expiry textWatchers if fields are for card expiry formatting
-                        if (formField.name == "expiry") {
-                            editText.addTextChangedListener(ExpiryDateFormatter(editText))
-                        }
-                        formLayout.addView(editText)
-                    }
+                    formLayout.addView(editText)
                 }
             }
         }
+    }
+
+    private fun generatePaymentDetailsByMode(mode: Mode) {
+        val fieldsArray = JSONArray()
+        var paymentField: JSONObject
+        var selectedMode: String = mode.code
+
+        if (mode.formFields.isNotEmpty()) {
+            mode.formFields.forEach {
+                paymentField = when (it.fieldType) {
+                    FIELD_TYPE_CHECKBOX -> {
+                        val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
+                        getPaymentField(
+                            it.name!!,
+                            checkbox?.isChecked ?: false
+                        )
+                    }
+                    FIELD_TYPE_SELECT -> {
+                        val spinner = formLayout.findViewWithTag<Spinner>(it.name)
+                        val selection = it.data?.values?.single { item ->
+                            item.label == spinner.selectedItem
+                        }
+                        getPaymentField(
+                            it.name!!,
+                            selection?.value ?: ""
+                        )
+                    }
+                    FIELD_TYPE_RADIO -> {
+                        val radioGroup = formLayout.findViewWithTag<RadioGroup>(it)
+                        val radioButton = formLayout.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
+
+                        var selectedValue = radioButton.tag.toString()
+                        getPaymentField(it.name!!,selectedValue)
+                    }
+                    else -> {
+                        val formFieldEditText =
+                            formLayout.findViewWithTag<FormFieldEditText>(it.name)
+                        getPaymentField(
+                            it.name!!,
+                            formFieldEditText?.text.toString()
+                        )
+                    }
+                }
+                fieldsArray.put(paymentField)
+            }
+        }
+        paymentDetails.put("mode", selectedMode)
+        paymentDetails.put("fields", fieldsArray)
     }
 
     private fun validateFormInput(): Boolean {
@@ -156,7 +201,6 @@ class MakePaymentFragment : Fragment(R.layout.fragment_make_payment), InaiChecko
     private fun generatePaymentDetails() {
         val fieldsArray = JSONArray()
         var paymentField: JSONObject
-        var mode: String ?= null
         //for wallets there is no form fields so generating paymentdetails based rail code
         if(paymentMethodOption.category == Constants.CATEGORY_WALLET){
             val radioGroup = formLayout.findViewWithTag<RadioGroup>(walletPaymentOptions)
@@ -167,89 +211,39 @@ class MakePaymentFragment : Fragment(R.layout.fragment_make_payment), InaiChecko
             }
             return
         }
-        if (paymentMethodOption.modes != null && paymentMethodOption.modes!!.isNotEmpty()) {
-            paymentMethodOption.modes?.forEach {
-                if (it.formFields.isNotEmpty()) {
-                    mode = it.code
-                    it.formFields.forEach {
-                        paymentField = when (it.fieldType) {
-                            FIELD_TYPE_CHECKBOX -> {
-                                val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
-                                getPaymentField(
-                                    it.name!!,
-                                    checkbox?.isChecked ?: false
-                                )
-                            }
-                            FIELD_TYPE_SELECT -> {
-                                val spinner = formLayout.findViewWithTag<Spinner>(it.name)
-                                val selection = it.data?.values?.single { item ->
-                                    item.label == spinner.selectedItem
-                                }
-                                getPaymentField(
-                                    it.name!!,
-                                    selection?.value ?: ""
-                                )
-                            }
-                            FIELD_TYPE_RADIO -> {
-                                val radioGroup = formLayout.findViewWithTag<RadioGroup>(it)
-                                val radioButton = formLayout.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
 
-                                if(radioButton!=null){
-                                    var selectedValue = radioButton.tag.toString()
-                                    getPaymentField(it.name!!,selectedValue)
-                                }
-                                return
-                            }
-                            else -> {
-                                val formFieldEditText =
-                                    formLayout.findViewWithTag<FormFieldEditText>(it.name)
-                                getPaymentField(
-                                    it.name!!,
-                                    formFieldEditText?.text.toString()
-                                )
-                            }
-                        }
-                        fieldsArray.put(paymentField)
+        paymentMethodOption.formFields.forEach {
+
+            paymentField = when (it.fieldType) {
+                FIELD_TYPE_CHECKBOX -> {
+                    val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
+                    getPaymentField(
+                        it.name!!,
+                        checkbox?.isChecked ?: false
+                    )
+                }
+                FIELD_TYPE_SELECT -> {
+                    val spinner = formLayout.findViewWithTag<Spinner>(it.name)
+                    val selection = it.data?.values?.single { item ->
+                        item.label == spinner.selectedItem
                     }
+                    getPaymentField(
+                        it.name!!,
+                        selection?.value ?: ""
+                    )
+                }
+                else -> {
+                    val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
+                    getPaymentField(
+                        it.name!!,
+                        formFieldEditText?.text.toString()
+                    )
                 }
             }
-            paymentDetails.put("mode", mode)
-            paymentDetails.put("fields", fieldsArray)
-        }else{
-            paymentMethodOption.formFields.forEach {
-
-                paymentField = when (it.fieldType) {
-                    FIELD_TYPE_CHECKBOX -> {
-                        val checkbox = formLayout.findViewWithTag<CheckBox>(it.name)
-                        getPaymentField(
-                            it.name!!,
-                            checkbox?.isChecked ?: false
-                        )
-                    }
-                    FIELD_TYPE_SELECT -> {
-                        val spinner = formLayout.findViewWithTag<Spinner>(it.name)
-                        val selection = it.data?.values?.single { item ->
-                            item.label == spinner.selectedItem
-                        }
-                        getPaymentField(
-                            it.name!!,
-                            selection?.value ?: ""
-                        )
-                    }
-                    else -> {
-                        val formFieldEditText = formLayout.findViewWithTag<FormFieldEditText>(it.name)
-                        getPaymentField(
-                            it.name!!,
-                            formFieldEditText?.text.toString()
-                        )
-                    }
-                }
-
-                fieldsArray.put(paymentField)
-            }
-
-            paymentDetails.put("fields", fieldsArray)
+            fieldsArray.put(paymentField)
         }
+
+        paymentDetails.put("fields", fieldsArray)
         // Get payment field JSON object based on field type.
 
     }
