@@ -10,21 +10,25 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.inai.android_sample_integration.*
+import io.inai.android_sample_integration.R
+import io.inai.android_sample_integration.BuildConfig
 import io.inai.android_sample_integration.Config.amount
 import io.inai.android_sample_integration.Config.countryCode
 import io.inai.android_sample_integration.Config.currency
 import io.inai.android_sample_integration.google_pay.GooglePayActivity
 import io.inai.android_sample_integration.headless.HeadlessActivity
 import io.inai.android_sample_integration.helpers.*
+import io.inai.android_sdk.*
 import kotlinx.android.synthetic.main.fragment_make_payment_payment_options.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import org.json.JSONObject
 
 
-class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payment_payment_options) {
+class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payment_payment_options) ,InaiCheckoutDelegate{
 
     private val inaiBackendOrdersUrl: String = BuildConfig.BaseUrl + "/orders"
     private val inaiBackendPaymentOptionsUrl: String = BuildConfig.BaseUrl + "/payment-method-options"
@@ -33,6 +37,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         "test_order_id" to JsonPrimitive("test_order")
     )
     private val paymentOptionsAdapter: PaymentOptionsAdapter by lazy { PaymentOptionsAdapter() }
+
     private val bundle = Bundle()
 
     companion object {
@@ -40,6 +45,8 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         const val ARG_PAYMENT_OPTION = "arg_payment_option"
         const val APPLE_PAY = "apple_pay"
         const val GOOGLE_PAY = "google_pay"
+        lateinit var PaymentMethodOptionsList: List<PaymentMethodOption>
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,7 +112,17 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
             val filteredList = paymentOptionsList.filter {
                 it.railCode != APPLE_PAY
             }
-            paymentOptionsAdapter.addList(filteredList)
+            PaymentMethodOptionsList = filteredList
+
+            var list = mutableListOf<PaymentMethodOption>()
+            list.addAll(filteredList)
+
+            var walletPaymentOptions = filteredList.filter { it.category == Constants.CATEGORY_WALLET } as MutableList<PaymentMethodOption>
+            if (walletPaymentOptions.isNotEmpty()){
+                list.removeAll(walletPaymentOptions)
+                list.add(walletPaymentOptions[0])
+            }
+            paymentOptionsAdapter.addList(list)
         }
     }
 
@@ -136,7 +153,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
                 email = "customer@example.com",
                 first_name = "John",
                 last_name = "Doe",
-                contact_number = "01010101010",
+                contact_number = "9600099009",
                 id = Config.customerId
             ),
             metadata = JsonObject(orderMetadata)
@@ -160,6 +177,7 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         }
     }
 
+
     private fun onError(error: String) {
         (activity as HeadlessActivity).hideProgress()
         this.showAlert(error)
@@ -180,5 +198,23 @@ class MakePayment_PaymentOptionsFragment : Fragment(R.layout.fragment_make_payme
         super.onStop()
         NetworkRequestHandler.cancelCoroutineScope()
         (activity as HeadlessActivity).hideProgress()
+    }
+
+    override fun paymentFinished(result: InaiPaymentResult) {
+        when (result.status) {
+            InaiPaymentStatus.Success -> {
+                showAlert("Payment Success! ${result.data}")
+            }
+            InaiPaymentStatus.Failed -> {
+                showAlert("Payment Failed! ${result.data}")
+            }
+            InaiPaymentStatus.Canceled -> {
+                var message = "Payment Canceled!"
+                if (result.data.has("message")) {
+                    message = result.data.getString("message")
+                }
+                showAlert(message)
+            }
+        }
     }
 }
