@@ -19,13 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
-# Added the following lines to work Inai SDK in release builds.
--keepclassmembers class * {
-    @android.webkit.JavascriptInterface <methods>;
-}
-
--keepattributes JavascriptInterface
-
--dontwarn io.inai.android_sdk.**
--keep class io.inai.android_sdk.** {*;}
