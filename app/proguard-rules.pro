@@ -20,7 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Added the following lines to work Inai SDK in release builds.
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
